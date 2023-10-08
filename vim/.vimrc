@@ -1,5 +1,4 @@
-"
-" 自定义 VIM 基础配置
+" " 自定义 VIM 基础配置
 "
 " 设置编码
 set encoding=utf-8
@@ -41,8 +40,12 @@ syntax on
 set magic
 " 突出当前行
 set cursorline
-
+" 括号自动补全
+inoremap ( ()<ESC>i
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+inoremap < <><ESC>i
 " 改变主题
-colorscheme onedark 
-let g:airline_theme='onedark'
+colorscheme molokai 
+let g:airline_theme='molokai'
 

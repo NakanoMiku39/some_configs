@@ -3,21 +3,12 @@
 
 ;; This file bootstraps the configuration, which is divided into a number of other files
 
-;;; Codes:
-(let ((minver "25.1"))
-  (when (version< emacs-version minver)
-    (error "Your Emacs is too old -- this config requires v%s or higher" minver)))
-(when (version< emacs-version "26.1")
-  (message "Your Emacs is old, and some functionality in this config will be disabled. Please upgrade if possible."))
-
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory)) ; 设定源码加载路径
-;; (require 'init-benchmarking) ;; Measure startup time
-
-(defconst *spell-check-support-enabled* nil) ;; Enable with t if you prefer
-(defconst *is-a-mac* (eq system-type 'darwin))
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'init-packages)
+(require 'theme)
+;; (require 'straight)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
-
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold (* 128 1024 1024)))
   (setq gc-cons-threshold init-gc-cons-threshold)
@@ -33,6 +24,7 @@
 (delete-selection-mode t)                    ; 选中文本后输入文本会替换文本（更符合我们习惯了的其它编辑器的逻辑）
 (setq inhibit-startup-message t)             ; 关闭启动 Emacs 时的欢迎界面
 (setq make-backup-files nil)                 ; 关闭文件自动备份
+(setq auto-save-default nil)                 ; 关闭自动保存文件
 (add-hook 'prog-mode-hook #'hs-minor-mode)   ; 编程模式下，可以折叠代码块
 (global-display-line-numbers-mode 1)         ; 在 Window 显示行号
 (tool-bar-mode -1)                           ; （熟练后可选）关闭 Tool bar
@@ -40,71 +32,99 @@
 
 (savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
 (setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
-(add-to-list 'default-frame-alist '(width . 90))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
-(add-to-list 'default-frame-alist '(height . 55)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
+(add-to-list 'default-frame-alist '(width . 80))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
+(add-to-list 'default-frame-alist '(height . 60)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 
+;; 更改现实字体大小 16pt
+(set-face-attribute 'default nil :height 160)
+;;让鼠标滚动更好用
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
+(setq mouse-wheel-progressive-speed nil)
 
-;; set-frame-font "Source Code Pro Bold 14" nil t) ; set fonts
+;; 增强minibuffer补全
+(package-install 'vertico)
+(vertico-mode t)
 
-;;; 使用国内镜像（腾讯景象）
-(require 'package)
-(setq package-archives '(("gnu"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
-                         ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")))
-(package-initialize)
+(package-install 'orderless)
+(setq competion-styles '(orderless))
 
+;; 打开scratch buffer
+(global-set-key (kbd "C-x s") 'scratch-buffer)
 
+;; minibuffer action和自适应的context menu
+(package-install 'embark)
+(global-set-key (kbd "C-;") 'embark-act)
+(setq prefix-help-command 'embark-prefix-help-command)
 
-;; melpa
-;; (require 'package)
-;; (add-to-list 'package-archives
-;;              '("melpa" . "https://melpa.org/packages/") t)
-;; (package-initialize)
-;; (package-refresh-contents)
-
-
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
- '(package-selected-packages
-   '(lsp-ui rustic lsp-mode company-box flycheck company use-package dracula-theme which-key smart-mode-line ivy 2048-game)))
-(custom-set-faces
- )
-
-;; ivy的配置
-;(ivy-mode)
-;(setq ivy-use-virtual-buffers t)
-;(setq enable-recursive-minibuffers t)
-;; enable this if you want `swiper' to use it
-;; (setq search-default-mode #'char-fold-to-regexp)
-;(global-set-key "\C-s" 'swiper)
-;(global-set-key (kbd "C-c C-r") 'ivy-resume)
-;(global-set-key (kbd "<f6>") 'ivy-resume)
-;(global-set-key (kbd "M-x") 'counsel-M-x)
-;(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-;(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-;(global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-;(global-set-key (kbd "<f1> l") 'counsel-find-library)
-;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-;(global-set-key (kbd "C-c g") 'counsel-git)
-;(global-set-key (kbd "C-c j") 'counsel-git-grep)
-;(global-set-key (kbd "C-c k") 'counsel-ag)
-;(global-set-key (kbd "C-x l") 'counsel-locate)
-;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-;(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-
-
-
+;; 增强文件内搜索和跳转函数定义
+(package-install 'consult)
+;; replace swiper
+(global-set-key (kbd "M-s") 'consult-line)
+;; consult-imenu
 
 (eval-when-compile
   (require 'use-package))
+
+;; (use-package restart-emacs
+;;   :ensure t)
+
+;; magit
+(use-package magit
+  :ensure t)
+
+;; 括号上色
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; 增强minibuffer的annotaion
+(use-package marginalia
+  :ensure t
+  :init (marginalia-mode))
+
+;; counsel
+(use-package counsel
+  :ensure t)
+
+;; ivy的配置
+(use-package ivy
+  :ensure t
+  :init
+  (ivy-mode 1)
+  (counsel-mode 1)
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq search-default-mode #'char-fold-to-regexp)
+  (setq ivy-count-format "(%d/%d) ")
+  :bind
+  (("C-s" . 'swiper)
+   ("C-x b" . 'ivy-switch-buffer)
+   ("C-c v" . 'ivy-push-view)
+   ("C-c s" . 'ivy-switch-view)
+   ("C-c V" . 'ivy-pop-view)
+   ("C-x C-@" . 'counsel-mark-ring); 在某些终端上 C-x C-SPC 会被映射为 C-x C-@，比如在 macOS 上，所以要手动设置
+   ("C-x C-SPC" . 'counsel-mark-ring)
+   :map minibuffer-local-map
+   ("C-r" . counsel-minibuffer-history)))
+
+;; 记录undo历史
+(use-package undo-tree
+  :ensure t
+  :init (global-undo-tree-mode)
+  :custom
+  (undo-tree-auto-save-history nil))
+
+;; mwin 光标移动
+(use-package mwim
+  :ensure t
+  :bind
+  ("C-a" . mwim-beginning-of-code-or-line)
+  ("C-e" . mwim-end-of-code-or-line))
+
+;; amx 记录命令历史
+(use-package amx
+  :ensure t
+  :init (amx-mode))
 
 (use-package smart-mode-line
   :ensure t
@@ -113,7 +133,7 @@
 (use-package which-key
   :ensure t
   :init (which-key-mode))
-(load-theme 'dracula t)
+;; (load-theme 'dracula t)
 
 (use-package flycheck
   :ensure t
@@ -123,8 +143,11 @@
   (prog-mode . flycheck-mode))
 
 (use-package company
+  :bind (:map company-active-map
+	      ("C-n" . 'company-select-next)
+	      ("C-p" . 'company-select-previous))
   :ensure t
-  :init (global-company-mode)
+  :init (global-company-mode t)
   :config
   (setq company-minimum-prefix-length 1)
   (setq company-tooltip-align-annotations t)
@@ -138,6 +161,28 @@
   :if window-system
   :hook (company-mode . company-box-mode))
 
+(use-package simple
+  :ensure nil
+  :hook (after-init . size-indication-mode)
+  :init
+  (progn
+    (setq column-number-mode t)
+    ))
+
+;;modeline上显示我的所有的按键和执行的命令
+(package-install 'keycast)
+(add-to-list 'global-mode-string '("" keycast-mode-line))
+(keycast-mode t)
+
+;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
+(use-package doom-modeline
+  :ensure t
+
+  :init
+  (doom-modeline-mode t))
+
+(use-package all-the-icons
+  :if (display-graphic-p))
 
 ;; ;;; rust环境配置
 ;; (use-package rustic
@@ -170,11 +215,9 @@
 
 
 ;; 手动安装rust-mode
-(add-to-list 'load-path "~/rust-mode/")
-(autoload 'rust-mode "rust-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-
-
+;; (add-to-list 'load-path "~/rust-mode/")
+;; (autoload 'rust-mode "rust-mode" nil t)
+;; (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 
 (use-package lsp-mode
   :ensure
@@ -196,7 +239,92 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 
+;; Python
+(use-package python
+  :defer t
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python3" . python-mode)
+  :config
+  ;; for debug
+  (require 'dap-python))
+
+(use-package pyvenv
+  :ensure t
+  :config
+  ;; (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs"))
+  ;; (setq python-shell-interpreter "python3")  ; （可选）更改解释器名字
+  (pyvenv-mode t)
+  ;; （可选）如果希望启动后激活 miniconda 的 base 环境，就使用如下的 hook
+  ;; :hook
+  ;; (python-mode . (lambda () (pyvenv-workon "..")))
+)
+
+;; Pyright
+(use-package lsp-pyright
+  :ensure t
+  :config
+  :hook
+  (python-mode . (lambda ()
+		  (require 'lsp-pyright)
+		  (lsp-deferred))))
+
+;; (use-package eglot
+;;   :config
+;;   ;; 给 c-mode, c++-mode 配置使用 clangd-11 作为 LSP 后端
+;;   ;; 需要主要的是，要根据上面你安装的 clangd 程序的名字填写这个配置
+;;   ;; 我这里写成 clangd-11 是因为安装的 clangd 程序的名字为 clangd-11
+;;   (add-to-list 'eglot-server-programs '((c-mode c++-mode) "clangd-19"))
+;;   ;; (add-to-list 'eglot-server-programs '((c-mode c++-mode) "clangd-19"))
+;;   ;; 使用 c-mode 时，开启 eglot
+;;   (add-hook 'c-mode-hook 'eglot-ensure)
+;;   ;; 使用 c++-mode 时，开启 eglot
+;;   (add-hook 'c++-mode-hook 'eglot-ensure))
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :config
+  (treemacs-tag-follow-mode)
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)
+	("C-x t a"   . treemacs-add-project)
+	("C-x t d"   . treemacs-remove-project-from-workspace))
+  (:map treemacs-mode-map
+	("/" . treemacs-advanced-helpful-hydra)))
+
+(use-package treemacs-projectile
+  :ensure t
+  :after (treemacs projectile))
+
+(use-package lsp-treemacs
+  :ensure t
+  :after (treemacs lsp))
+
+;; (use-package wordel
+;;     ;; Via straight.el:
+;;   :straight (wordel :host github :repo "progfolio/wordel" :files (:defaults "words")))
 
 (provide 'init)
 
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+ '(package-selected-packages
+   '(lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

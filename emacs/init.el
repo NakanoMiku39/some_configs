@@ -41,10 +41,6 @@
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
 
-;; 增强minibuffer补全
-(package-install 'vertico)
-(vertico-mode t)
-
 (package-install 'orderless)
 (setq competion-styles '(orderless))
 
@@ -62,11 +58,53 @@
 (global-set-key (kbd "M-s") 'consult-line)
 ;; consult-imenu
 
+(package-install 'embark-consult)
+(package-install 'wgrep)
+(setq wgrep-auto-save-buffer t)
+
+(eval-after-load
+    'consult
+  '(eval-after-load
+       'embark
+     '(progn
+        (require 'embark-consult)
+        (add-hook
+         'embark-collect-mode-hook
+         #'consult-preview-at-point-mode))))
+
+(define-key minibuffer-local-map (kbd "C-c C-e") 'embark-export-write)
+
+;;使用ripgrep来进行搜索
+;;consult-ripgrep
+
+;;everyting
+;;consult-locate
+;; 配置搜索中文
+(progn
+  (setq consult-locate-args (encode-coding-string "es.exe -i -p -r" 'gbk))
+  (add-to-list 'process-coding-system-alist '("es" gbk . gbk))
+  )
+(eval-after-load 'consult
+  (progn
+    (setq
+     consult-narrow-key "<"
+     consult-line-numbers-widen t
+     consult-async-min-input 2
+     consult-async-refresh-delay  0.15
+     consult-async-input-throttle 0.2
+     consult-async-input-debounce 0.1)
+    ))
+
 (eval-when-compile
   (require 'use-package))
 
 ;; (use-package restart-emacs
 ;;   :ensure t)
+
+;; 增强minibuffer补全
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
 
 ;; magit
 (use-package magit
@@ -293,7 +331,7 @@
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)
-	("C-x t a"   . treemacs-add-project)
+	("C-x t a"   . treemacs-add-project-to-workspace)
 	("C-x t d"   . treemacs-remove-project-from-workspace))
   (:map treemacs-mode-map
 	("/" . treemacs-advanced-helpful-hydra)))

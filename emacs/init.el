@@ -6,6 +6,9 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'init-packages)
 (require 'theme)
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
 ;; (require 'straight)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
@@ -40,6 +43,11 @@
 ;;让鼠标滚动更好用
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
+
+;; yaml改进换行
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
 (package-install 'orderless)
 (setq competion-styles '(orderless))
@@ -101,6 +109,10 @@
 ;; (use-package restart-emacs
 ;;   :ensure t)
 
+(use-package diff-hl
+  :ensure t
+  :init (global-diff-hl-mode))
+
 ;; 增强minibuffer补全
 (use-package vertico
   :ensure t
@@ -108,7 +120,8 @@
 
 ;; magit
 (use-package magit
-  :ensure t)
+  :ensure t
+  :defer 2)
 
 ;; 括号上色
 (use-package rainbow-delimiters
@@ -148,6 +161,7 @@
 ;; 记录undo历史
 (use-package undo-tree
   :ensure t
+  :defer 2
   :init (global-undo-tree-mode)
   :custom
   (undo-tree-auto-save-history nil))
@@ -181,6 +195,7 @@
   (prog-mode . flycheck-mode))
 
 (use-package company
+  :hook (scala-mode . company-mode)
   :bind (:map company-active-map
 	      ("C-n" . 'company-select-next)
 	      ("C-p" . 'company-select-previous))
@@ -192,7 +207,8 @@
   (setq company-idle-delay 0.0)
   (setq company-show-numbers t)
   (setq company-selection-wrap-around t)
-  (setq company-transformers '(company-sort-by-occurrence)))
+  (setq company-transformers '(company-sort-by-occurrence))
+  (setq lsp-completion-provider :capf))
 
 (use-package company-box
   :ensure t
@@ -260,6 +276,9 @@
 (use-package lsp-mode
   :ensure
   :commands lsp
+  :hook
+  (scala-mode . lsp)
+  (lsp-mode . lsp-lens-mode)
   :custom
   ;; 保存时使用什么进行检查，默认是 "check"，我更推荐 "clippy"
   (lsp-rust-analyzer-cargo-watch-command "clippy")
@@ -277,9 +296,16 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 
+(use-package posframe)
+
+(use-package dap-mode
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
+
 ;; Python
 (use-package python
-  :defer t
+  :defer 5
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python3" . python-mode)
   :config
@@ -288,6 +314,7 @@
 
 (use-package pyvenv
   :ensure t
+  :defer 5
   :config
   ;; (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs"))
   ;; (setq python-shell-interpreter "python3")  ; （可选）更改解释器名字
@@ -305,6 +332,25 @@
   (python-mode . (lambda ()
 		  (require 'lsp-pyright)
 		  (lsp-deferred))))
+
+;; Enable scala-mode for highlighting, indentation and motion commands
+(use-package scala-mode
+  :interpreter ("scala" . scala-mode))
+
+;; Enable sbt mode for executing sbt commands
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+(use-package lsp-metals)
 
 ;; (use-package eglot
 ;;   :config
@@ -344,9 +390,35 @@
   :ensure t
   :after (treemacs lsp))
 
-;; (use-package wordel
-;;     ;; Via straight.el:
-;;   :straight (wordel :host github :repo "progfolio/wordel" :files (:defaults "words")))
+(use-package vterm
+    :ensure t)
+
+(use-package shackle
+  :ensure t
+  :hook (after-init . shackle-mode)
+  :custom
+  (shackle-default-size 0.5)
+  (shackle-default-alignment 'below)
+  :config
+  (setq shackle-rules
+	'((term-mode :regexp t
+		     :select t
+		     :size 0.3
+		     :align t
+		     :popup t
+		     :quit t)
+	  (vterm-mode :regexp t
+		     :select t
+		     :size 0.3
+		     :align t
+		     :popup t
+		     :quit t)
+	  (ansi-term :regexp t
+		     :select t
+		     :size 0.3
+		     :align t
+		     :popup t
+		     :quit t))))
 
 (provide 'init)
 
@@ -359,7 +431,7 @@
  '(custom-safe-themes
    '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(package-selected-packages
-   '(lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult)))
+   '(lsp-metals lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

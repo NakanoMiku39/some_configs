@@ -7,14 +7,14 @@
 (require 'init-packages)
 (require 'theme)
 (require 'yaml-mode)
+(require 'org-mode)
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-
 ;; (require 'straight)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
+  (setq gc-cons-threshold most-positive-fixnum)
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
@@ -35,11 +35,21 @@
 
 (savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
 (setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
-(add-to-list 'default-frame-alist '(width . 80))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
-(add-to-list 'default-frame-alist '(height . 60)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
-
-;; 更改现实字体大小 16pt
+;; (add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
+;; (add-to-list 'default-frame-alist '(height . 80)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
+;; (set-frame-size (selected-frame) 120 80)
+;; ;; 更改显示字体大小 16pt
 (set-face-attribute 'default nil :height 160)
+
+;; 测量启动速度
+(add-hook 'emacs-startup-hook
+    (lambda ()
+        (message "Emacs ready in %s with %d garbage collections."
+            (format "%.2f seconds"
+                (float-time
+                    (time-subtract after-init-time before-init-time)))
+            gcs-done)))
+
 ;;让鼠标滚动更好用
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
@@ -106,8 +116,25 @@
 (eval-when-compile
   (require 'use-package))
 
-;; (use-package restart-emacs
-;;   :ensure t)
+(use-package compat
+  :ensure t)
+(use-package dirvish
+  :ensure t
+  :hook (after-init . dirvish-override-dired-mode)
+  :bind(
+	("C-x d" . dirvish)
+	))
+
+;; 快速行跳转
+(use-package avy
+  :ensure t
+  :bind
+  (("M-j" . avy-goto-char-timer)))
+
+;; 窗口切换
+(use-package ace-window
+  :ensure t
+  :bind (("C-x o" . 'ace-window)))
 
 (use-package diff-hl
   :ensure t
@@ -189,6 +216,7 @@
 
 (use-package flycheck
   :ensure t
+  :init (global-flycheck-mode)
   :config
   (setq truncate-lines nil)
   :hook
@@ -291,6 +319,7 @@
 (use-package lsp-ui
   :ensure
   :commands lsp-ui-mode
+
   :custom
   (lsp-ui-peek-always-show t)
   (lsp-ui-sideline-show-hover t)
@@ -304,34 +333,34 @@
   (lsp-mode . dap-ui-mode))
 
 ;; Python
-(use-package python
-  :defer 5
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python3" . python-mode)
-  :config
-  ;; for debug
-  (require 'dap-python))
+;; (use-package python
+;;   :defer 5
+;;   :mode ("\\.py\\'" . python-mode)
+;;   :interpreter ("python3" . python-mode)
+;;   :config
+;;   ;; for debug
+;;   (require 'dap-python))
 
-(use-package pyvenv
-  :ensure t
-  :defer 5
-  :config
-  ;; (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs"))
-  ;; (setq python-shell-interpreter "python3")  ; （可选）更改解释器名字
-  (pyvenv-mode t)
-  ;; （可选）如果希望启动后激活 miniconda 的 base 环境，就使用如下的 hook
-  ;; :hook
-  ;; (python-mode . (lambda () (pyvenv-workon "..")))
-)
+;; (use-package pyvenv
+;;   :ensure t
+;;   :defer 5
+;;   :config
+;;   ;; (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs"))
+;;   ;; (setq python-shell-interpreter "python3")  ; （可选）更改解释器名字
+;;   (pyvenv-mode t)
+;;   ;; （可选）如果希望启动后激活 miniconda 的 base 环境，就使用如下的 hook
+;;   ;; :hook
+;;   ;; (python-mode . (lambda () (pyvenv-workon "..")))
+;; )
 
 ;; Pyright
-(use-package lsp-pyright
-  :ensure t
-  :config
-  :hook
-  (python-mode . (lambda ()
-		  (require 'lsp-pyright)
-		  (lsp-deferred))))
+;; (use-package lsp-pyright
+;;   :ensure t
+;;   :config
+;;   :hook
+;;   (python-mode . (lambda ()
+;; 		  (require 'lsp-pyright)
+;; 		  (lsp-deferred))))
 
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
@@ -390,35 +419,35 @@
   :ensure t
   :after (treemacs lsp))
 
-(use-package vterm
-    :ensure t)
+;; ;; (use-package vterm
+;;     :ensure t)
 
-(use-package shackle
-  :ensure t
-  :hook (after-init . shackle-mode)
-  :custom
-  (shackle-default-size 0.5)
-  (shackle-default-alignment 'below)
-  :config
-  (setq shackle-rules
-	'((term-mode :regexp t
-		     :select t
-		     :size 0.3
-		     :align t
-		     :popup t
-		     :quit t)
-	  (vterm-mode :regexp t
-		     :select t
-		     :size 0.3
-		     :align t
-		     :popup t
-		     :quit t)
-	  (ansi-term :regexp t
-		     :select t
-		     :size 0.3
-		     :align t
-		     :popup t
-		     :quit t))))
+;; (use-package shackle
+;;   :ensure t
+;;   :hook (after-init . shackle-mode)
+;;   :custom
+;;   (shackle-default-size 0.5)
+;;   (shackle-default-alignment 'below)
+;;   :config
+;;   (setq shackle-rules
+;; 	'((term-mode :regexp t
+;; 		     :select t
+;; 		     :size 0.3
+;; 		     :align t
+;; 		     :popup t
+;; 		     :quit t)
+;; 	  (vterm-mode :regexp t
+;; 		     :select t
+;; 		     :size 0.3
+;; 		     :align t
+;; 		     :popup t
+;; 		     :quit t)
+;; 	  (ansi-term :regexp t
+;; 		     :select t
+;; 		     :size 0.3
+;; 		     :align t
+;; 		     :popup t
+;; 		     :quit t))))
 
 (provide 'init)
 
@@ -430,8 +459,9 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+ '(org-agenda-files '("~/org/TODO.org"))
  '(package-selected-packages
-   '(lsp-metals lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult)))
+   '(lsp-metals lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult dirvish)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

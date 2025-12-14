@@ -3,20 +3,24 @@
 
 ;; This file bootstraps the configuration, which is divided into a number of other files
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'init-packages)
-(require 'theme)
-(require 'yaml-mode)
-(require 'org-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
-;; (require 'straight)
-
 ;; Adjust garbage collection thresholds during startup, and thereafter
 (let ((normal-gc-cons-threshold (* 20 1024 1024))
       (init-gc-cons-threshold (* 128 1024 1024)))
   (setq gc-cons-threshold most-positive-fixnum)
   (add-hook 'emacs-startup-hook
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(setq straight-use-package-by-default t)
+(setq package-enable-at-startup nil)
+;; (require 'init-packages)
+(require 'straight)
+(require 'theme)
+(require 'yaml-mode)
+(require 'org-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
 
 
 (setq confirm-kill-emacs #'yes-or-no-p)      ; 在关闭 Emacs 前询问是否确认关闭，防止误触
@@ -59,26 +63,39 @@
       '(lambda ()
         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 
-(package-install 'orderless)
-(setq competion-styles '(orderless))
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless)))
 
 ;; 打开scratch buffer
 (global-set-key (kbd "C-x s") 'scratch-buffer)
 
 ;; minibuffer action和自适应的context menu
-(package-install 'embark)
-(global-set-key (kbd "C-;") 'embark-act)
-(setq prefix-help-command 'embark-prefix-help-command)
+(use-package embark
+  :ensure t
+  :bind
+  ("C-;" . embark-act)
+  :init
+  (setq prefix-help-command 'embark-prefix-help-command))
 
 ;; 增强文件内搜索和跳转函数定义
-(package-install 'consult)
-;; replace swiper
-(global-set-key (kbd "M-s") 'consult-line)
-;; consult-imenu
+(use-package consult
+  :ensure t
+  :bind
+  ("M-s" . consult-line))
 
-(package-install 'embark-consult)
-(package-install 'wgrep)
-(setq wgrep-auto-save-buffer t)
+;; consult-imenu
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package wgrep
+  :ensure t
+  :custom
+  (wgrep-auto-save-buffer t))
 
 (eval-after-load
     'consult
@@ -103,7 +120,7 @@
   (add-to-list 'process-coding-system-alist '("es" gbk . gbk))
   )
 (eval-after-load 'consult
-  (progn
+  '(progn
     (setq
      consult-narrow-key "<"
      consult-line-numbers-widen t
@@ -118,6 +135,7 @@
 
 (use-package compat
   :ensure t)
+
 (use-package dirvish
   :ensure t
   :hook (after-init . dirvish-override-dired-mode)
@@ -141,9 +159,9 @@
   :init (global-diff-hl-mode))
 
 ;; 增强minibuffer补全
-(use-package vertico
-  :ensure t
-  :init (vertico-mode))
+;; (use-package vertico
+;;   :ensure t
+;;   :init (vertico-mode))
 
 ;; magit
 (use-package magit
@@ -245,6 +263,7 @@
 
 (use-package simple
   :ensure nil
+  :straight nil
   :hook (after-init . size-indication-mode)
   :init
   (progn
@@ -252,9 +271,10 @@
     ))
 
 ;;modeline上显示我的所有的按键和执行的命令
-(package-install 'keycast)
-(add-to-list 'global-mode-string '("" keycast-mode-line))
-(keycast-mode t)
+(use-package keycast
+  :ensure t
+  :config
+  (add-to-list 'global-mode-string '("" keycast-mode-line " ")))
 
 ;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
 (use-package doom-modeline
@@ -266,41 +286,6 @@
 (use-package all-the-icons
   :if (display-graphic-p))
 
-;; ;;; rust环境配置
-;; (use-package rustic
-;;   :ensure
-;;   :bind (:map rustic-mod-map
-;;       ("M-j" . lsp-ui-imenu)
-;;       ("M-?" . lsp-find-references)
-;;       ("C-c C-c l" . flycheck-list-errors)
-;;       ("C-c C-c a" . lsp-execute-code-action)
-;;       ("C-c C-c r" . lsp-rename)
-;;       ("C-c C-c q" . lsp-wordspace-restart)
-;;       ("C-c C-c Q" . lsp-workspace-shutdown)
-;;       ("C-c C-c s" . lsp-rust-analyzer-status))
-;;   :config
-;;   ;; 减少闪动可以取消这里的注释
-;;   ;; (setq lsp-eldoc-hook nil)      
-;;   ;; (setq lsp-enable-symbol-highlighting nil)
-;;   ;; (setq lsp-signature-auto-activate nil)
-
-;;   ;; 注释下面这行可以禁用保存时 rustfmt 格式化
-;;   (setq rustic-format-on-save t)
-;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
-
-;; (defun rk/rustic-mode-hook ()
-;;   ;; 所以运行 C-c C-c C-r 无需确认就可以工作，但不要尝试保存不是文件访问的 rust 缓存。
-;;   ;; 一旦 https://github.com/brotzeit/rustic/issues/253 问题处理了
-;;   ;; 就不需要这个配置了
-;;   (when buffer-file-name
-;;     (setq-local buffer-save-without-query t)))
-
-
-;; 手动安装rust-mode
-;; (add-to-list 'load-path "~/rust-mode/")
-;; (autoload 'rust-mode "rust-mode" nil t)
-;; (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-
 (use-package lsp-mode
   :ensure
   :commands lsp
@@ -309,12 +294,13 @@
   (lsp-mode . lsp-lens-mode)
   :custom
   ;; 保存时使用什么进行检查，默认是 "check"，我更推荐 "clippy"
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
   (lsp-eldoc-render-all t)
   (lsp-idle-delay 0.6)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
+  ;; (lsp-rust-analyzer-server-display-inlay-hints t)
   :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'rust-mode-hook 'lsp-deferred))
 
 (use-package lsp-ui
   :ensure
@@ -327,10 +313,10 @@
 
 (use-package posframe)
 
-(use-package dap-mode
-  :hook
-  (lsp-mode . dap-mode)
-  (lsp-mode . dap-ui-mode))
+;; (use-package dap-mode
+;;   :hook
+;;   (lsp-mode . dap-mode)
+;;   (lsp-mode . dap-ui-mode))
 
 ;; Python
 ;; (use-package python

@@ -39,11 +39,17 @@
 
 (savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
 (setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
-;; (add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
+(add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
 ;; (add-to-list 'default-frame-alist '(height . 80)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 ;; (set-frame-size (selected-frame) 120 80)
 ;; ;; 更改显示字体大小 16pt
 (set-face-attribute 'default nil :height 160)
+
+(use-package project
+  :straight t
+  :config
+  ;; 这一行是为了确保 project 确实被加载了，防止被后续的内置加载覆盖
+  (require 'project))
 
 ;; 测量启动速度
 (add-hook 'emacs-startup-hook
@@ -70,6 +76,11 @@
 
 ;; 打开scratch buffer
 (global-set-key (kbd "C-x s") 'scratch-buffer)
+
+(use-package multiple-cursors
+  :ensure t
+  :bind
+  ("C-S-<mouse-1>" . mc/toggle-cursor-on-click)) 
 
 ;; minibuffer action和自适应的context menu
 (use-package embark
@@ -159,9 +170,11 @@
   :init (global-diff-hl-mode))
 
 ;; 增强minibuffer补全
-;; (use-package vertico
-;;   :ensure t
-;;   :init (vertico-mode))
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
+
+(use-package posframe)
 
 ;; magit
 (use-package magit
@@ -286,99 +299,101 @@
 (use-package all-the-icons
   :if (display-graphic-p))
 
-(use-package lsp-mode
-  :ensure
-  :commands lsp
-  :hook
-  (scala-mode . lsp)
-  (lsp-mode . lsp-lens-mode)
-  :custom
-  ;; 保存时使用什么进行检查，默认是 "check"，我更推荐 "clippy"
-  ;; (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  ;; (lsp-rust-analyzer-server-display-inlay-hints t)
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  (add-hook 'rust-mode-hook 'lsp-deferred))
+;; ============================================================
+;; LSP 客户端切换配置
+;; ============================================================
 
-(use-package lsp-ui
-  :ensure
-  :commands lsp-ui-mode
+;; 定义一个变量来决定使用哪个 LSP 客户端
+;; 可选值: 'eglot 或 'lsp-mode
+;; 修改这里的值并重启 Emacs (或者重新求值) 即可切换
+(defconst my/lsp-client 'eglot)
 
-  :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-doc-enable nil))
+;; ------------------------------------------------------------
+;; 方案 A: Eglot (轻量级，Emacs 原生风格)
+;; ------------------------------------------------------------
+(when (eq my/lsp-client 'eglot)
+  (use-package eglot
+    :straight t
+    :hook
+    ;; 在这里统一管理所有语言的启动 Hook
+    ((c-mode . eglot-ensure)
+     (c++-mode . eglot-ensure)
+     (rust-mode . eglot-ensure)
+     (scala-mode . eglot-ensure)
+     (python-mode . eglot-ensure))
+    :config
+    ;; 优化性能
+    (setq eglot-events-buffer-size 0) ;; 关闭 event log 以提升性能
+    (setq eglot-autoshutdown t)       ;; 关闭最后一个 buffer 时关闭 server
 
-(use-package posframe)
+    ;; 配置 C/C++ 使用特定的 clangd 版本
+    (add-to-list 'eglot-server-programs '((c-mode c++-mode) "clangd-19"))
 
-;; (use-package dap-mode
-;;   :hook
-;;   (lsp-mode . dap-mode)
-;;   (lsp-mode . dap-ui-mode))
+    ;; Eglot 默认使用 Flymake。
+    ;; 如果你开启了 global-flycheck-mode，为了避免冲突或重复显示，
+    ;; 可以选择在 eglot 启动时禁用 flycheck，或者安装 flycheck-eglot。
+    ;; 下面这个 hook 会在 eglot 启动时关闭当前 buffer 的 flycheck
+    (add-hook 'eglot-managed-mode-hook (lambda () (flycheck-mode -1)))
+    ))
 
-;; Python
-;; (use-package python
-;;   :defer 5
-;;   :mode ("\\.py\\'" . python-mode)
-;;   :interpreter ("python3" . python-mode)
-;;   :config
-;;   ;; for debug
-;;   (require 'dap-python))
+;; ------------------------------------------------------------
+;; 方案 B: LSP-Mode (功能丰富，界面华丽)
+;; ------------------------------------------------------------
+(when (eq my/lsp-client 'lsp-mode)
+  (use-package lsp-mode
+    :straight t
+    :commands lsp
+    :hook
+    (scala-mode . lsp)
+    (rust-mode . lsp-deferred)
+    (lsp-mode . lsp-lens-mode)
+    :custom
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    (lsp-completion-provider :capf) ;; 只有 lsp-mode 需要显式设置这个
+    :config
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-;; (use-package pyvenv
-;;   :ensure t
-;;   :defer 5
-;;   :config
-;;   ;; (setenv "WORKON_HOME" (expand-file-name "~/miniconda3/envs"))
-;;   ;; (setq python-shell-interpreter "python3")  ; （可选）更改解释器名字
-;;   (pyvenv-mode t)
-;;   ;; （可选）如果希望启动后激活 miniconda 的 base 环境，就使用如下的 hook
-;;   ;; :hook
-;;   ;; (python-mode . (lambda () (pyvenv-workon "..")))
-;; )
+  (use-package lsp-ui
+    :straight t
+    :commands lsp-ui-mode
+    :custom
+    (lsp-ui-peek-always-show t)
+    (lsp-ui-sideline-show-hover t)
+    (lsp-ui-doc-enable nil))
 
-;; Pyright
-;; (use-package lsp-pyright
-;;   :ensure t
-;;   :config
-;;   :hook
-;;   (python-mode . (lambda ()
-;; 		  (require 'lsp-pyright)
-;; 		  (lsp-deferred))))
+  ;; Scala 专用 (lsp-mode 独有)
+  (use-package lsp-metals
+    :straight t)
 
-;; Enable scala-mode for highlighting, indentation and motion commands
+  ;; Treemacs 集成 (lsp-mode 独有)
+  (use-package lsp-treemacs
+    :straight t
+    :after (treemacs lsp)))
+
+;; ============================================================
+;; 语言模式 (基础 Mode，无论用哪个 LSP 都需要)
+;; ============================================================
+
+;; Scala Mode
 (use-package scala-mode
+  :straight t
   :interpreter ("scala" . scala-mode))
 
-;; Enable sbt mode for executing sbt commands
+;; SBT Mode
 (use-package sbt-mode
+  :straight t
   :commands sbt-start sbt-command
   :config
-  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
-  ;; allows using SPACE when in the minibuffer
   (substitute-key-definition
    'minibuffer-complete-word
    'self-insert-command
    minibuffer-local-completion-map)
-   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
    (setq sbt:program-options '("-Dsbt.supershell=false")))
 
-(use-package lsp-metals)
-
-;; (use-package eglot
-;;   :config
-;;   ;; 给 c-mode, c++-mode 配置使用 clangd-11 作为 LSP 后端
-;;   ;; 需要主要的是，要根据上面你安装的 clangd 程序的名字填写这个配置
-;;   ;; 我这里写成 clangd-11 是因为安装的 clangd 程序的名字为 clangd-11
-;;   (add-to-list 'eglot-server-programs '((c-mode c++-mode) "clangd-19"))
-;;   ;; (add-to-list 'eglot-server-programs '((c-mode c++-mode) "clangd-19"))
-;;   ;; 使用 c-mode 时，开启 eglot
-;;   (add-hook 'c-mode-hook 'eglot-ensure)
-;;   ;; 使用 c++-mode 时，开启 eglot
-;;   (add-hook 'c++-mode-hook 'eglot-ensure))
-
+;; ============================================================
+;; Treemacs (通用文件树，不依赖具体 LSP)
+;; ============================================================
 (use-package treemacs
   :ensure t
   :defer t
@@ -404,36 +419,6 @@
 (use-package lsp-treemacs
   :ensure t
   :after (treemacs lsp))
-
-;; ;; (use-package vterm
-;;     :ensure t)
-
-;; (use-package shackle
-;;   :ensure t
-;;   :hook (after-init . shackle-mode)
-;;   :custom
-;;   (shackle-default-size 0.5)
-;;   (shackle-default-alignment 'below)
-;;   :config
-;;   (setq shackle-rules
-;; 	'((term-mode :regexp t
-;; 		     :select t
-;; 		     :size 0.3
-;; 		     :align t
-;; 		     :popup t
-;; 		     :quit t)
-;; 	  (vterm-mode :regexp t
-;; 		     :select t
-;; 		     :size 0.3
-;; 		     :align t
-;; 		     :popup t
-;; 		     :quit t)
-;; 	  (ansi-term :regexp t
-;; 		     :select t
-;; 		     :size 0.3
-;; 		     :align t
-;; 		     :popup t
-;; 		     :quit t))))
 
 (provide 'init)
 

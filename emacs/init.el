@@ -14,6 +14,8 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq straight-use-package-by-default t)
 (setq package-enable-at-startup nil)
+;; 安装use-package，包都通过use-package管理
+(straight-use-package 'use-package)
 ;; (require 'init-packages)
 (require 'straight)
 (require 'theme)

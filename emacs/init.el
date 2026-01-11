@@ -377,6 +377,9 @@
 ;; 语言模式 (基础 Mode，无论用哪个 LSP 都需要)
 ;; ============================================================
 
+;; Rust Mode
+(use-package rust-mode)
+
 ;; Scala Mode
 (use-package scala-mode
   :straight t

@@ -219,11 +219,20 @@
    ("C-r" . counsel-minibuffer-history)))
 
 ;; 记录undo历史
-(use-package undo-tree
-  :ensure t  
-  :init (global-undo-tree-mode)
-  :custom
-  (undo-tree-auto-save-history nil))
+;; (use-package undo-tree
+;;   :ensure t  
+;;   :init (global-undo-tree-mode)
+;;   :custom
+;;   (undo-tree-auto-save-history nil))
+
+;; vundo
+(use-package vundo
+  :ensure t
+  :bind ("C-x u" . vundo) 
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (setq vundo-compact-display nil)
+)
 
 ;; mwin 光标移动
 (use-package mwim
@@ -463,7 +472,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+   '("be0d9f0e72a4ebc4a59c382168921b082b4dc15844bdaf1353c08157806b3321" "19d62171e83f2d4d6f7c31fc0a6f437e8cec4543234f0548bad5d49be8e344cd" "0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1" "8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098" "3613617b9953c22fe46ef2b593a2e5bc79ef3cc88770602e7e569bbd71de113b" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(org-agenda-files '("~/org/TODO.org"))
  '(package-selected-packages
    '(lsp-metals lsp-treemacs treemacs-projectile treemacs lsp-ui lsp-mode doom-modeline company-box company flycheck amx mwim undo-tree counsel doom-themes which-key vertico smart-mode-line orderless marginalia keycast embark consult dirvish)))

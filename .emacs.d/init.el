@@ -40,8 +40,9 @@
 (when (display-graphic-p) (toggle-scroll-bar -1)) ; 图形界面时关闭滚动条
 
 (savehist-mode 1)                            ; （可选）打开 Buffer 历史记录保存
-(setq display-line-numbers-type 'relative)   ; （可选）显示相对行号
-(add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
+(setq display-line-numbers-type 'absolute)   ; （可选）显示相对行号
+;; (add-hook 'window-setup-hook #'toggle-frame-maximized)
+;; (add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
 ;; (add-to-list 'default-frame-alist '(height . 80)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 ;; (set-frame-size (selected-frame) 120 80)
 ;; ;; 更改显示字体大小 16pt
@@ -70,6 +71,15 @@
 (add-hook 'yaml-mode-hook
       '(lambda ()
         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+;; JSON 支持
+(use-package json-mode
+  :ensure t)
+
+;; Markdown
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode))
 
 (use-package orderless
   :ensure t
@@ -122,11 +132,11 @@
 
 (define-key minibuffer-local-map (kbd "C-c C-e") 'embark-export-write)
 
-;;使用ripgrep来进行搜索
-;;consult-ripgrep
+;; 项目内全局搜索替换 (配合你的 ripgrep)
+(use-package deadgrep
+  :ensure t
+  :bind ("C-c g" . deadgrep))
 
-;;everyting
-;;consult-locate
 ;; 配置搜索中文
 (progn
   (setq consult-locate-args (encode-coding-string "es.exe -i -p -r" 'gbk))
@@ -178,10 +188,47 @@
 
 (use-package posframe)
 
+;; 注释增强
+(use-package evil-nerd-commenter
+  :ensure t
+  :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+
+;; 高亮 TODO/FIXME 等关键词
+(use-package hl-todo
+  :ensure t
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO"   . "#FF0000")
+          ("FIXME"  . "#FF0000")
+          ("NOTE"   . "#00FF00")
+          ("HACK"   . "#FF00FF"))))
+
 ;; magit
 (use-package magit
   :ensure t
   :defer 2)
+
+;; 在 buffer 中显示 git blame
+(use-package git-gutter
+  :ensure t
+  :hook (prog-mode . git-gutter-mode))
+
+;; 显示缩进线
+(use-package highlight-indent-guides
+  :ensure t
+  :hook (prog-mode . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method 'character))
+
+;; 专注模式 - 高亮当前行/段落
+(use-package focus
+  :ensure t)
+
+;; 彩虹模式 - 显示颜色代码的实际颜色
+(use-package rainbow-mode
+  :ensure t
+  :hook (prog-mode . rainbow-mode))
 
 ;; 括号上色
 (use-package rainbow-delimiters
@@ -424,13 +471,17 @@
 (use-package dashboard
   :straight t
   :ensure t
-  :config
-  (setq dashboard-banner-logo-title "Welcome to Emacs!") ;; 个性签名，随读者喜好设置
-  (setq dashboard-projects-backend 'projectile) ;; 读者可以暂时注释掉这一行，等安装了 projectile 后再使用
-  (setq dashboard-startup-banner 'official) ;; 也可以自定义图片
+  :init
+  (setq dashboard-banner-logo-title "安和すばるで一す、よろしくね!") ;; 个性签名
+  (setq dashboard-projects-backend 'projectile)
+  (setq dashboard-startup-banner 
+        (expand-file-name "banners/logo.jpeg" user-emacs-directory)) ;; 自定义图片
+  (setq dashboard-image-banner-max-width 300)   ;; 最大宽度（像素）
+  (setq dashboard-image-banner-max-height 200)  ;; 最大高度（像素）
   (setq dashboard-items '((recents  . 10)   ;; 显示多少个最近文件
 			  (bookmarks . 5)  ;; 显示多少个最近书签
 			  (projects . 10))) ;; 显示多少个最近项目
+  :config
   (dashboard-setup-startup-hook))
 
 ;; ============================================================

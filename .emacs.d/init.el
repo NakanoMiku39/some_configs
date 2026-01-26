@@ -4,12 +4,12 @@
 ;; This file bootstraps the configuration, which is divided into a number of other files
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold most-positive-fixnum)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
-
+;; (let ((normal-gc-cons-threshold (* 100 1024 1024))
+;;       (init-gc-cons-threshold (* 128 1024 1024)))
+;;   (setq gc-cons-threshold most-positive-fixnum)
+;;   (add-hook 'emacs-startup-hook
+;;             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+(setq gc-cons-threshold (* 200 1024 1024)) ; 设为 200MB (默认通常只有 800kb)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (setq straight-use-package-by-default t)
@@ -47,6 +47,15 @@
 ;; (set-frame-size (selected-frame) 120 80)
 ;; ;; 更改显示字体大小 16pt
 (set-face-attribute 'default nil :height 160)
+;; 限制 undo 记录的内存大小
+(setq undo-limit (* 20 1024 1024))        ; 20MB (默认是 160kb，太小了；但也别设太大)
+(setq undo-strong-limit (* 30 1024 1024)) ; 30MB
+(setq undo-outer-limit (* 300 1024 1024)) ; 300MB
+
+(use-package gcmh
+  :ensure t
+  :init
+  (gcmh-mode 1))
 
 (use-package project
   :straight t
@@ -363,7 +372,7 @@
 ;; 定义一个变量来决定使用哪个 LSP 客户端
 ;; 可选值: 'eglot 或 'lsp-mode
 ;; 修改这里的值并重启 Emacs (或者重新求值) 即可切换
-(defconst my/lsp-client 'eglot)
+(defconst my/lsp-client nil)
 
 ;; ------------------------------------------------------------
 ;; 方案 A: Eglot (轻量级，Emacs 原生风格)
@@ -434,6 +443,13 @@
 ;; ============================================================
 ;; 语言模式 (基础 Mode，无论用哪个 LSP 都需要)
 ;; ============================================================
+
+;; Emacs 29+ 内置 tree-sitter
+(use-package treesit-auto
+  :ensure t
+  :config
+  (setq treesit-auto-install 't)  ;; 自动安装语法文件
+  (global-treesit-auto-mode))
 
 ;; Rust Mode
 (use-package rust-mode)

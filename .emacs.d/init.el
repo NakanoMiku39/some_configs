@@ -19,9 +19,13 @@
 ;; 安装use-package，包都通过use-package管理
 (straight-use-package 'use-package)
 (require 'theme)
-(require 'yaml-mode)
 (require 'org-mode)
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+;; yaml-mode (通过 straight 安装)
+(use-package yaml-mode
+  :mode ("\\.yml\\'" "\\.yaml\\'")
+  :hook (yaml-mode . (lambda ()
+                       (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
 
 
 
@@ -53,12 +57,10 @@
 (setq undo-outer-limit (* 300 1024 1024)) ; 300MB
 
 (use-package gcmh
-  :ensure t
   :init
   (gcmh-mode 1))
 
 (use-package project
-  :straight t
   :config
   ;; 这一行是为了确保 project 确实被加载了，防止被后续的内置加载覆盖
   (require 'project))
@@ -76,22 +78,14 @@
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
 
-;; yaml改进换行
-(add-hook 'yaml-mode-hook
-      '(lambda ()
-        (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-
 ;; JSON 支持
-(use-package json-mode
-  :ensure t)
+(use-package json-mode)
 
 ;; Markdown
 (use-package markdown-mode
-  :ensure t
   :mode ("README\\.md\\'" . gfm-mode))
 
 (use-package orderless
-  :ensure t
   :custom
   (completion-styles '(orderless)))
 
@@ -99,13 +93,11 @@
 (global-set-key (kbd "C-x s") 'scratch-buffer)
 
 (use-package multiple-cursors
-  :ensure t
   :bind
-  ("C-S-<mouse-1>" . mc/toggle-cursor-on-click)) 
+  ("C-S-<mouse-1>" . mc/toggle-cursor-on-click))
 
 ;; minibuffer action和自适应的context menu
 (use-package embark
-  :ensure t
   :bind
   ("C-;" . embark-act)
   :init
@@ -113,37 +105,28 @@
 
 ;; 增强文件内搜索和跳转函数定义
 (use-package consult
-  :ensure t
   :bind
   ("M-s" . consult-line))
 
 ;; consult-imenu
 (use-package embark-consult
-  :ensure t
   :after (embark consult)
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package wgrep
-  :ensure t
   :custom
   (wgrep-auto-save-buffer t))
 
-(eval-after-load
-    'consult
-  '(eval-after-load
-       'embark
-     '(progn
-        (require 'embark-consult)
-        (add-hook
-         'embark-collect-mode-hook
-         #'consult-preview-at-point-mode))))
+(with-eval-after-load 'consult
+  (with-eval-after-load 'embark
+    (require 'embark-consult)
+    (add-hook 'embark-collect-mode-hook #'consult-preview-at-point-mode)))
 
 (define-key minibuffer-local-map (kbd "C-c C-e") 'embark-export-write)
 
 ;; 项目内全局搜索替换 (配合你的 ripgrep)
 (use-package deadgrep
-  :ensure t
   :bind ("C-c g" . deadgrep))
 
 ;; 配置搜索中文
@@ -151,25 +134,20 @@
   (setq consult-locate-args (encode-coding-string "es.exe -i -p -r" 'gbk))
   (add-to-list 'process-coding-system-alist '("es" gbk . gbk))
   )
-(eval-after-load 'consult
-  '(progn
-    (setq
-     consult-narrow-key "<"
-     consult-line-numbers-widen t
-     consult-async-min-input 2
-     consult-async-refresh-delay  0.15
-     consult-async-input-throttle 0.2
-     consult-async-input-debounce 0.1)
-    ))
+(with-eval-after-load 'consult
+  (setq consult-narrow-key "<"
+        consult-line-numbers-widen t
+        consult-async-min-input 2
+        consult-async-refresh-delay  0.15
+        consult-async-input-throttle 0.2
+        consult-async-input-debounce 0.1))
 
 (eval-when-compile
   (require 'use-package))
 
-(use-package compat
-  :ensure t)
+(use-package compat)
 
 (use-package dirvish
-  :ensure t
   :hook (after-init . dirvish-override-dired-mode)
   :bind(
 	("C-x d" . dirvish)
@@ -177,34 +155,28 @@
 
 ;; 快速行跳转
 (use-package avy
-  :ensure t
   :bind
   (("M-j" . avy-goto-char-timer)))
 
 ;; 窗口切换
 (use-package ace-window
-  :ensure t
   :bind (("C-x o" . 'ace-window)))
 
 (use-package diff-hl
-  :ensure t
   :init (global-diff-hl-mode))
 
 ;; 增强minibuffer补全
 (use-package vertico
-  :ensure t
   :init (vertico-mode))
 
 (use-package posframe)
 
 ;; 注释增强
 (use-package evil-nerd-commenter
-  :ensure t
   :bind ("M-;" . evilnc-comment-or-uncomment-lines))
 
 ;; 高亮 TODO/FIXME 等关键词
 (use-package hl-todo
-  :ensure t
   :hook (prog-mode . hl-todo-mode)
   :config
   (setq hl-todo-keyword-faces
@@ -215,47 +187,38 @@
 
 ;; magit
 (use-package magit
-  :ensure t
   :defer 2)
 
 ;; 在 buffer 中显示 git blame
 (use-package git-gutter
-  :ensure t
   :hook (prog-mode . git-gutter-mode))
 
 ;; 显示缩进线
 (use-package highlight-indent-guides
-  :ensure t
   :hook (prog-mode . highlight-indent-guides-mode)
   :config
   (setq highlight-indent-guides-method 'character))
 
 ;; 专注模式 - 高亮当前行/段落
-(use-package focus
-  :ensure t)
+(use-package focus)
 
 ;; 彩虹模式 - 显示颜色代码的实际颜色
 (use-package rainbow-mode
-  :ensure t
   :hook (prog-mode . rainbow-mode))
 
 ;; 括号上色
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; 增强minibuffer的annotaion
 (use-package marginalia
-  :ensure t
   :init (marginalia-mode))
 
 ;; counsel
-(use-package counsel
-  :ensure t)
+(use-package counsel)
 
 ;; ivy的配置
 (use-package ivy
-  :ensure t
   :init
   (ivy-mode 1)
   (counsel-mode 1)
@@ -283,36 +246,29 @@
 
 ;; vundo
 (use-package vundo
-  :ensure t
-  :bind ("C-x u" . vundo) 
+  :bind ("C-x u" . vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols)
-  (setq vundo-compact-display nil)
-)
+  (setq vundo-compact-display nil))
 
 ;; mwin 光标移动
 (use-package mwim
-  :ensure t
   :bind
   ("C-a" . mwim-beginning-of-code-or-line)
   ("C-e" . mwim-end-of-code-or-line))
 
 ;; amx 记录命令历史
 (use-package amx
-  :ensure t
   :init (amx-mode))
 
 (use-package smart-mode-line
-  :ensure t
   :init (sml/setup))
 
 (use-package which-key
-  :ensure t
   :init (which-key-mode))
 ;; (load-theme 'dracula t)
 
 (use-package flycheck
-  :ensure t
   :init (global-flycheck-mode)
   :config
   (setq truncate-lines nil)
@@ -324,7 +280,6 @@
   :bind (:map company-active-map
 	      ("C-n" . 'company-select-next)
 	      ("C-p" . 'company-select-previous))
-  :ensure t
   :init (global-company-mode t)
   :config
   (setq company-minimum-prefix-length 1)
@@ -336,7 +291,6 @@
   (setq lsp-completion-provider :capf))
 
 (use-package company-box
-  :ensure t
   :if window-system
   :hook (company-mode . company-box-mode))
 
@@ -351,14 +305,11 @@
 
 ;;modeline上显示我的所有的按键和执行的命令
 (use-package keycast
-  :ensure t
   :config
   (add-to-list 'global-mode-string '("" keycast-mode-line " ")))
 
-;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后‘
+;; 这里的执行顺序非常重要，doom-modeline-mode 的激活时机一定要在设置global-mode-string 之后'
 (use-package doom-modeline
-  :ensure t
-
   :init
   (doom-modeline-mode t))
 
@@ -379,7 +330,6 @@
 ;; ------------------------------------------------------------
 (when (eq my/lsp-client 'eglot)
   (use-package eglot
-    :straight t
     :hook
     ;; 在这里统一管理所有语言的启动 Hook
     ((c-mode . eglot-ensure)
@@ -410,7 +360,6 @@
 ;; ------------------------------------------------------------
 (when (eq my/lsp-client 'lsp-mode)
   (use-package lsp-mode
-    :straight t
     :commands lsp
     :hook
     (scala-mode . lsp)
@@ -424,7 +373,6 @@
     (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
   (use-package lsp-ui
-    :straight t
     :commands lsp-ui-mode
     :custom
     (lsp-ui-peek-always-show t)
@@ -432,12 +380,10 @@
     (lsp-ui-doc-enable nil))
 
   ;; Scala 专用 (lsp-mode 独有)
-  (use-package lsp-metals
-    :straight t)
+  (use-package lsp-metals)
 
   ;; Treemacs 集成 (lsp-mode 独有)
   (use-package lsp-treemacs
-    :straight t
     :after (treemacs lsp)))
 
 ;; ============================================================
@@ -446,7 +392,6 @@
 
 ;; Emacs 29+ 内置 tree-sitter
 (use-package treesit-auto
-  :ensure t
   :config
   (setq treesit-auto-install 't)  ;; 自动安装语法文件
   (global-treesit-auto-mode))
@@ -456,12 +401,10 @@
 
 ;; Scala Mode
 (use-package scala-mode
-  :straight t
   :interpreter ("scala" . scala-mode))
 
 ;; SBT Mode
 (use-package sbt-mode
-  :straight t
   :commands sbt-start sbt-command
   :config
   (substitute-key-definition
@@ -470,27 +413,21 @@
    minibuffer-local-completion-map)
    (setq sbt:program-options '("-Dsbt.supershell=false")))
 
- (use-package projectile
-  :straight t
-  :ensure t
+(use-package projectile
   :bind (("C-c p" . projectile-command-map))
   :config
   (setq projectile-mode-line "Projectile")
   (setq projectile-track-known-projects-automatically nil))
 
 (use-package counsel-projectile
-  :straight t
-  :ensure t
   :after (projectile)
   :init (counsel-projectile-mode))
 
 (use-package dashboard
-  :straight t
-  :ensure t
   :init
   (setq dashboard-banner-logo-title "安和すばるで一す、よろしくね!") ;; 个性签名
   (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-startup-banner 
+  (setq dashboard-startup-banner
         (expand-file-name "banners/logo.jpeg" user-emacs-directory)) ;; 自定义图片
   (setq dashboard-image-banner-max-width 300)   ;; 最大宽度（像素）
   (setq dashboard-image-banner-max-height 200)  ;; 最大高度（像素）
@@ -504,7 +441,6 @@
 ;; Treemacs (通用文件树，不依赖具体 LSP)
 ;; ============================================================
 (use-package treemacs
-  :ensure t
   :defer t
   :config
   (treemacs-tag-follow-mode)
@@ -522,17 +458,11 @@
 	("/" . treemacs-advanced-helpful-hydra)))
 
 (use-package treemacs-projectile
-  :ensure t
   :after (treemacs projectile))
 
 (use-package lsp-treemacs
-  :ensure t
   :after (treemacs lsp))
 
-
-(provide 'init)
-
-;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -549,3 +479,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(provide 'init)
+
+;;; init.el ends here

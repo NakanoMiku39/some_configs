@@ -282,9 +282,9 @@
 	      ("C-p" . 'company-select-previous))
   :init (global-company-mode t)
   :config
-  (setq company-minimum-prefix-length 1)
+  (setq company-minimum-prefix-length 2)       ; 输入 2 字符后触发
   (setq company-tooltip-align-annotations t)
-  (setq company-idle-delay 0.0)
+  (setq company-idle-delay 0.2)                ; 延迟 0.2 秒
   (setq company-show-numbers t)
   (setq company-selection-wrap-around t)
   (setq company-transformers '(company-sort-by-occurrence))

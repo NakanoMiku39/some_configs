@@ -4,22 +4,22 @@
   "height": 32,
   "spacing": 0,
   "modules-left": [
-    "hyprland/workspaces",
+    // "hyprland/workspaces",
     "tray",
-    "custom/lock",
-    "custom/reboot",
-    "custom/power"
+    "custom/lock"
+    // "custom/reboot",
+    // "custom/power"
   ],
-  "modules-center": ["hyprland/window"],
+  // "modules-center": ["hyprland/window"],
   "modules-right": [
     "network",
     "battery",
     "bluetooth",
     "pulseaudio",
-    "backlight",
-    "custom/temperature",
-    "memory",
-    "cpu",
+    // "backlight",
+    // "custom/temperature",
+    // "memory",
+    // "cpu",
     "clock"
   ],
   "hyprland/workspaces": {
@@ -45,7 +45,7 @@
   },
   "custom/lock": {
   "format": "<span color='#00FFFF'>  </span>",
-  "on-click": "hyprlock",
+  "on-click": "swaylock",
   "tooltip": true,
   "tooltip-format": "锁屏"
   },
@@ -120,9 +120,9 @@
   },
   "clock": {
     "interval": 1,
-    "timezone": "Asia/Chengdu",
-    "format": "<span color='#BF00FF'>  </span>{:%H:%M} ",
-    "tooltip": true,
+    "timezone": "Asia/Shanghai",
+    "format": "<span color='#BF00FF'>  </span> {:L%Y 年 %m 月 %d 日  %A %H:%M} ",
+    "tooltip": false,
     "tooltip-format": "{:L%Y 年 %m 月 %d 日, %A}"
   },
   "tray": {
@@ -144,7 +144,7 @@
   "bluetooth": {
     "format": "<span color='#00BFFF'>  </span>{status} ",
     "format-connected": "<span color='#00BFFF'>  </span>{device_alias} ",
-    "format-connected-battery": "<span color='#00BFFF'>  </span>{device_alias}{device_battery_percentage}% ",
+    "format-connected-battery": "<span color='#00BFFF'>  </span>{device_alias} {device_battery_percentage}% ",
     "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",

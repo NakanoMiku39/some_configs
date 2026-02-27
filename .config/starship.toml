@@ -1,0 +1,180 @@
+# ---- 基本设置 ----
+format = """
+[](#45475a)\
+$os\
+$username\
+[](bg:#585b70 fg:#45475a)\
+$directory\
+[](fg:#585b70 bg:#89b4fa)\
+$git_branch\
+$git_status\
+[](fg:#89b4fa bg:#a6e3a1)\
+$c\
+$rust\
+$golang\
+$python\
+$java\
+$nodejs\
+$lua\
+[](fg:#a6e3a1 bg:#f9e2af)\
+$cmd_duration\
+[](fg:#f9e2af)\
+$line_break\
+$character"""
+
+right_format = """$time"""
+
+add_newline = true
+palette = "catppuccin_mocha"
+
+# ---- 调色板 ----
+[palettes.catppuccin_mocha]
+rosewater = "#f5e0dc"
+flamingo  = "#f2cdcd"
+pink      = "#f5c2e7"
+mauve     = "#cba6f7"
+red       = "#f38ba8"
+maroon    = "#eba0ac"
+peach     = "#fab387"
+yellow    = "#f9e2af"
+green     = "#a6e3a1"
+teal      = "#94e2d5"
+sky       = "#89dceb"
+sapphire  = "#74c7ec"
+blue      = "#89b4fa"
+lavender  = "#b4befe"
+text      = "#cdd6f4"
+subtext1  = "#bac2de"
+subtext0  = "#a6adc8"
+overlay2  = "#9399b2"
+overlay1  = "#7f849c"
+overlay0  = "#6c7086"
+surface2  = "#585b70"
+surface1  = "#45475a"
+surface0  = "#313244"
+base      = "#1e1e2e"
+mantle    = "#181825"
+crust     = "#11111b"
+
+# ---- 操作系统图标 ----
+[os]
+disabled = false
+style = "bg:#45475a fg:#cdd6f4"
+
+[os.symbols]
+Arch = "󰣇 "
+Ubuntu = " "
+Fedora = " "
+Linux = " "
+Windows = "󰍲 "
+Macos = " "
+
+# ---- 用户名 ----
+[username]
+show_always = true
+style_user = "bg:#45475a fg:#cdd6f4"
+style_root = "bg:#45475a fg:#f38ba8"
+format = "[$user ]($style)"
+
+# ---- 目录 ----
+[directory]
+style = "bg:#585b70 fg:#cdd6f4"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+read_only = " 󰌾"
+read_only_style = "bg:#585b70 fg:#f38ba8"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Videos" = "󰿎 "
+"Projects" = "󰲋 "
+"~" = " "
+
+# ---- Git ----
+[git_branch]
+symbol = " "
+style = "bg:#89b4fa fg:#1e1e2e"
+format = "[ $symbol$branch ]($style)"
+
+[git_status]
+style = "bg:#89b4fa fg:#1e1e2e"
+format = "[$all_status$ahead_behind ]($style)"
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇕⇡${ahead_count}⇣${behind_count} "
+conflicted = " ${count} "
+untracked = "? ${count} "
+stashed = "📦 ${count} "
+modified = "! ${count} "
+staged = "+ ${count} "
+deleted = "✘ ${count} "
+
+# ---- 编程语言 ----
+[c]
+symbol = " "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+[rust]
+symbol = "🦀 "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+[golang]
+symbol = " "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+[python]
+symbol = " "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version)( \\($virtualenv\\)) ]($style)"
+
+[java]
+symbol = " "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+[nodejs]
+symbol = "󰎙 "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+[lua]
+symbol = "󰢱 "
+style = "bg:#a6e3a1 fg:#1e1e2e"
+format = "[ $symbol($version) ]($style)"
+
+# ---- 命令耗时 ----
+[cmd_duration]
+min_time = 1_000
+style = "bg:#f9e2af fg:#1e1e2e"
+format = "[ 󱎫 $duration ]($style)"
+show_milliseconds = false
+
+# ---- 输入提示符 ----
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold mauve)"
+
+# ---- 右侧时间 ----
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "fg:#585b70"
+format = " $time_format "
+
+# ---- 不需要的模块关闭 ----
+[package]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[line_break]
+disabled = false

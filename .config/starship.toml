@@ -167,7 +167,7 @@ vimcmd_symbol = "[❮](bold mauve)"
 disabled = false
 time_format = "%H:%M"
 style = "fg:#585b70"
-format = " $time_format "
+format = "[$time]($style)"
 
 # ---- 不需要的模块关闭 ----
 [package]

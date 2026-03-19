@@ -1,2 +1,4 @@
 .claude/
 .vscode/
+# tmux plugins (cloned via tpm)
+.config/tmux/plugins/

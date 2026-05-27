@@ -1,0 +1,11 @@
+# Perl regular expressions, one per line.
+#
+# Keep package documentation in this repository instead of linking it into
+# $HOME when running stow.
+(^|/)README\.md$
+
+# Common repository metadata and local files.
+^\.git$
+^\.gitignore$
+^\.stow-local-ignore$
+^\.DS_Store$

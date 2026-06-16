@@ -6,6 +6,8 @@
 
 # Common repository metadata and local files.
 ^\.git$
+^\.github$
+^\.githooks$
 ^\.gitignore$
 ^\.stow-local-ignore$
 ^\.DS_Store$

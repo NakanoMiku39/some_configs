@@ -1,26 +1,25 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 32,
-  "spacing": 0,
+  "height": 38,
+  "spacing": 4,
   "modules-left": [
-    // "hyprland/workspaces",
-    "tray",
-    "custom/lock"
-    // "custom/reboot",
-    // "custom/power"
+    "custom/logout",
+    "custom/lock",
+    "tray"
   ],
-  // "modules-center": ["hyprland/window"],
+  "modules-center": [
+    "clock"
+  ],
   "modules-right": [
     "network",
-    "battery",
     "bluetooth",
     "pulseaudio",
+    "battery"
     // "backlight",
     // "custom/temperature",
     // "memory",
-    // "cpu",
-    "clock"
+    // "cpu"
   ],
   "hyprland/workspaces": {
     "disable-scroll": false,
@@ -43,11 +42,17 @@
       "default": ""
     }
   },
+  "custom/logout": {
+    "format": "󰍃",
+    "on-click": "niri msg action quit",
+    "tooltip": true,
+    "tooltip-format": "注销"
+  },
   "custom/lock": {
-  "format": "<span color='#00FFFF'>  </span>",
-  "on-click": "swaylock",
-  "tooltip": true,
-  "tooltip-format": "锁屏"
+    "format": "",
+    "on-click": "swaylock",
+    "tooltip": true,
+    "tooltip-format": "锁屏"
   },
   "custom/reboot": {
     "format": "<span color='#FFD700'>  </span>",
@@ -62,12 +67,12 @@
     "tooltip-format": "关机"
   },
   "network": {
-    "format-wifi": "<span color='#00FFFF'> 󰤨 </span>{essid} ",
-    "format-ethernet": "<span color='#7FFF00'> </span>Wired ",
-    "tooltip-format": "<span color='#FF1493'> 󰅧 </span>{bandwidthUpBytes}  <span color='#00BFFF'> 󰅢 </span>{bandwidthDownBytes}",
-    "format-linked": "<span color='#FFA500'> 󱘖 </span>{ifname} (No IP) ",
-    "format-disconnected": "<span color='#FF4040'>  </span>Disconnected ",
-    "format-alt": "<span color='#00FFFF'> 󰤨 </span>{signalStrength}% ",
+    "format-wifi": "󰤨 {essid}",
+    "format-ethernet": "󰈀 Wired",
+    "tooltip-format": "上传 {bandwidthUpBytes}  下载 {bandwidthDownBytes}",
+    "format-linked": "󱘖 {ifname} no IP",
+    "format-disconnected": "󰤭 Offline",
+    "format-alt": "󰤨 {signalStrength}%",
     "interval": 1
   },
   "battery": {
@@ -75,26 +80,26 @@
       "warning": 30,
       "critical": 15
     },
-    "format": "<span color='#28CD41'> {icon} </span>{capacity}% ",
-    "format-charging": " 󱐋{capacity}%",
-	  "interval": 1,
+    "format": "{icon} {capacity}%",
+    "format-charging": "󱐋 {capacity}%",
+    "interval": 1,
     "format-icons": ["󰂎", "󰁼", "󰁿", "󰂁", "󰁹"],
     "tooltip": true
   },
   "pulseaudio": {
-    "format": "<span color='#00FF7F'>{icon}</span>{volume}% ",
-    "format-muted": "<span color='#FF4040'> 󰖁 </span>0% ",
+    "format": "{icon} {volume}%",
+    "format-muted": "󰖁 muted",
     "format-icons": {
-      "headphone": "<span color='#BF00FF'>  </span>",
-      "hands-free": "<span color='#BF00FF'>  </span>",
-      "headset": "<span color='#BF00FF'>  </span>",
-      "phone": "<span color='#00FFFF'>  </span>",
-      "portable": "<span color='#00FFFF'>  </span>",
-      "car": "<span color='#FFA500'>  </span>",
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
       "default": [
-        "<span color='#808080'>  </span>",
-        "<span color='#FFFF66'>  </span>",
-        "<span color='#00FF7F'>  </span>"
+        "",
+        "",
+        ""
       ]
     },
     "on-click-right": "pavucontrol -t 3",
@@ -121,12 +126,12 @@
   "clock": {
     "interval": 1,
     "timezone": "Asia/Shanghai",
-    "format": "<span color='#BF00FF'>  </span> {:L%Y 年 %m 月 %d 日  %A %H:%M} ",
+    "format": "  {:L%m 月 %d 日  %A  %H:%M}",
     "tooltip": false,
     "tooltip-format": "{:L%Y 年 %m 月 %d 日, %A}"
   },
   "tray": {
-    "icon-size": 17,
+    "icon-size": 16,
     "spacing": 6
   },
   "backlight": {
@@ -142,13 +147,12 @@
     ]
   },
   "bluetooth": {
-    "format": "<span color='#00BFFF'>  </span>{status} ",
-    "format-connected": "<span color='#00BFFF'>  </span>{device_alias} ",
-    "format-connected-battery": "<span color='#00BFFF'>  </span>{device_alias} {device_battery_percentage}% ",
+    "format": " {status}",
+    "format-connected": " {device_alias}",
+    "format-connected-battery": " {device_alias} {device_battery_percentage}%",
     "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
     "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
     "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
   }
 }
-

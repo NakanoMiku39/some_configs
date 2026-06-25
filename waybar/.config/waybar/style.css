@@ -1,123 +1,154 @@
-/* 全局设置 */
+@define-color bg rgba(12, 18, 30, 0.76);
+@define-color bg-hover rgba(31, 45, 70, 0.9);
+@define-color border rgba(120, 160, 210, 0.26);
+@define-color text #dce3ee;
+@define-color muted #93a4b8;
+@define-color blue #61afef;
+@define-color aqua #72d6d3;
+@define-color green #98c379;
+@define-color yellow #e5c07b;
+@define-color orange #d19a66;
+@define-color purple #c678dd;
+@define-color red #e06c75;
+
 * {
-    /* font-family: "CaskaydiaCove Nerd Font", "Font Awesome 6 Free", "Font Awesome 6 Free Solid"; */
-    font-family: "FiraCode Nerd Font";
-  font-weight: bold;
-  font-size: 16px;
-  color: #dcdfe1;
-}
-
-/* 透明 Waybar 背景 */
-#waybar {
-  background-color: rgba(0, 0, 0, 0);
+  font-family: "FiraCode Nerd Font";
+  font-weight: 700;
+  font-size: 14px;
+  color: @text;
   border: none;
-  box-shadow: none;
+  border-radius: 0;
+  min-height: 0;
 }
 
-/* 所有模块统一风格 */
-#workspaces,
-#window,
-#tray{
-  /*background-color: rgba(29,31,46, 0.95);*/
-  background-color: rgba(15,27,53,0.9);
-  padding: 4px 6px; /* 保持内部间距 */
-  margin-top: 6px; /* 外部间距增加 */
-  margin-left: 6px; /* 外部间距增加 */
-  margin-right: 6px; /* 外部间距增加 */
-  border-radius: 10px;
-  border-width: 0px;
+#waybar {
+  background: transparent;
 }
 
-#clock,
-#custom-power{
-  background-color: rgba(15,27,53,0.9);
-  margin-top: 6px; /* 与屏幕顶部留出距离 */
-  margin-right: 6px;
-  /*margin-bottom: 4px;*/
-  padding: 4px 2px; /* 保持内部间距 */
-  border-radius: 0 10px 10px 0;
-  border-width: 0px;
-}
-
+#custom-logout,
+#custom-lock,
+#tray,
 #network,
-#custom-lock{
-  background-color: rgba(15,27,53,0.9);
-  margin-top: 6px; /* 与屏幕顶部留出距离 */
-  margin-left: 6px;
-  /*margin-bottom: 4px;*/
-  padding: 4px 2px; /* 保持内部间距 */
-  border-radius: 10px 0 0 10px;
-  border-width: 0px;
-}
-
-#custom-reboot,
 #bluetooth,
-#battery,
 #pulseaudio,
+#battery,
+#clock,
 #backlight,
 #custom-temperature,
 #memory,
-#cpu{
-  background-color: rgba(15,27,53,0.9);
-  margin-top: 6px; /* 与屏幕顶部留出距离 */
-  /*margin-bottom: 4px;*/
-  padding: 4px 2px; /* 保持内部间距 */
-  border-width: 0px;
+#cpu {
+  background: @bg;
+  border: 1px solid @border;
+  border-radius: 10px;
+  margin-top: 6px;
+  margin-bottom: 0;
+  padding: 4px 8px;
 }
 
-#custpm-temperature.critical,
-#pulseaudio.muted {
-  color: #FF0000;
-  padding-top: 0;
+#custom-logout {
+  margin-left: 6px;
+  padding: 4px 9px;
+  color: @red;
 }
 
-/* 鼠标悬停变亮一点 */
-#bluetooth:hover,
+#custom-lock {
+  color: @aqua;
+}
+
+#tray {
+  padding: 4px 7px;
+}
+
+#clock {
+  color: @purple;
+  padding: 4px 12px;
+}
+
+#network {
+  color: @aqua;
+}
+
+#bluetooth {
+  color: @blue;
+}
+
+#pulseaudio {
+  color: @orange;
+}
+
+#battery {
+  color: @green;
+  margin-right: 6px;
+}
+
+#backlight,
+#custom-temperature,
+#memory,
+#cpu {
+  color: @yellow;
+}
+
+#custom-logout:hover,
+#custom-lock:hover,
+#tray:hover,
 #network:hover,
-/*#tray:hover,*/
-#backlight:hover,
-#battery:hover,
+#bluetooth:hover,
 #pulseaudio:hover,
+#battery:hover,
+#clock:hover,
+#backlight:hover,
 #custom-temperature:hover,
 #memory:hover,
-#cpu:hover,
-#clock:hover,
-#custom-lock:hover,
-#custom-reboot:hover,
-#custom-power:hover,
-/*#workspaces:hover,*/
-#window:hover {
-  background-color: rgba(70, 75, 90, 0.9);
+#cpu:hover {
+  background: @bg-hover;
+  border-color: rgba(140, 190, 245, 0.42);
 }
 
-/* 工作区激活状态高亮 */
-#workspaces button:hover{
-  background-color: rgba(97, 175, 239, 0.2);
+#custom-logout:hover {
+  background: rgba(120, 48, 58, 0.9);
+  border-color: rgba(224, 108, 117, 0.55);
+  color: #ffffff;
+}
+
+#battery.warning {
+  color: @yellow;
+}
+
+#battery.critical,
+#pulseaudio.muted,
+#network.disconnected {
+  color: @red;
+}
+
+#workspaces {
+  background: @bg;
+  border: 1px solid @border;
+  border-radius: 10px;
+  margin-top: 6px;
+  padding: 3px 5px;
+}
+
+#workspaces button {
+  background: transparent;
+  color: @muted;
   padding: 2px 8px;
   margin: 0 2px;
-  border-radius: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+#workspaces button:hover {
+  background: rgba(97, 175, 239, 0.18);
+  color: @text;
 }
 
 #workspaces button.active {
-  background-color: #61afef; /* 蓝色高亮 */
-  color: #ffffff;
-  padding: 2px 8px;
-  margin: 0 2px;
-  border-radius: 10px;
-}
-
-/* 未激活工作区按钮 */
-#workspaces button {
-  background: transparent;
-  border: none;
-  color: #888888;
-  padding: 2px 8px;
-  margin: 0 2px;
-  font-weight: bold;
+  background: @blue;
+  color: #08111f;
 }
 
 #window {
+  color: @muted;
   font-weight: 500;
   font-style: italic;
 }
-

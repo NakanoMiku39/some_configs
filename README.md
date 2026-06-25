@@ -8,6 +8,7 @@ paths inside a package are relative to `$HOME`.
 - `aerospace`
 - `alacritty`
 - `emacs`
+- `fuzzel`
 - `git`
 - `i3blocks`
 - `i3status`
@@ -23,9 +24,19 @@ paths inside a package are relative to `$HOME`.
 - `waybar`
 - `zsh`
 
+The `emacs` package links the regular `~/.emacs.d` setup.  The legacy
+Spacemacs-style `~/.spacemacs` file is kept out of Stow so the two mutually
+exclusive Emacs configurations are not linked at the same time.
+
+The `zsh` package links `~/.zshrc` and `~/.p10k.zsh`. Third-party Oh My Zsh
+plugins and themes are installed separately under `~/.oh-my-zsh/custom`.
+
+The `fuzzel` package links `~/.config/fuzzel/fuzzel.ini`. The niri config uses
+`Mod+D` to launch fuzzel.
+
 ## RUN THIS
 ```sh
-stow -nv -t "$HOME" alacritty emacs git niri picom scripts swaylock systemd tmux waybar zsh
+stow -v -t "$HOME" alacritty emacs fuzzel git niri picom scripts swaylock systemd tmux waybar zsh
 ```
 
 ## Usage
@@ -33,19 +44,19 @@ stow -nv -t "$HOME" alacritty emacs git niri picom scripts swaylock systemd tmux
 Preview links before changing `$HOME`:
 
 ```sh
-stow -nv -t "$HOME" aerospace alacritty emacs git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -nv -t "$HOME" aerospace alacritty emacs fuzzel git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
 ```
 
 Apply the links:
 
 ```sh
-stow -v -t "$HOME" aerospace alacritty emacs git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -v -t "$HOME" aerospace alacritty emacs fuzzel git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
 ```
 
 Remove links managed by stow:
 
 ```sh
-stow -Dv -t "$HOME" aerospace alacritty emacs git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -Dv -t "$HOME" aerospace alacritty emacs fuzzel git i3blocks i3status i3wm niri picom scripts starship swaylock systemd tmux vim waybar zsh
 ```
 
 If existing files in `$HOME` conflict with stow, move or back them up first,

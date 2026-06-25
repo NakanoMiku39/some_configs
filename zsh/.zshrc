@@ -112,3 +112,19 @@ source $ZSH/oh-my-zsh.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# >>> Codex installer >>>
+export PATH="/home/nakanomiku/.local/bin:$PATH"
+# <<< Codex installer <<<
+
+# ===== zoxide (smart cd) =====
+eval "$(zoxide init zsh)"
+
+# ===== eza (better ls) =====
+alias ls="eza --icons --git"
+alias ll="eza -lh --icons --git"
+alias la="eza -lha --icons --git"
+alias lt="eza --tree --icons"
+
+# ===== cargo =====
+export PATH="$HOME/.cargo/bin:$PATH"

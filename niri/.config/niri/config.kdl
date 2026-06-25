@@ -408,6 +408,10 @@ binds {
     // Most actions that you can bind here can also be invoked programmatically with
     // `niri msg action do-something`.
 
+    Mod+Shift+S hotkey-overlay-title="截图并标注" {
+        spawn "sh" "-c" "grim -t ppm -g \"$(slurp)\" - | \"$HOME/.cargo/bin/satty\" --filename - --output-filename \"$HOME/Pictures/Screenshots/satty-%Y-%m-%d_%H-%M-%S.png\" --copy-command wl-copy --initial-tool arrow --floating-hack --actions-on-enter \"save-to-clipboard,exit\" --actions-on-escape \"exit\"";
+    }
+
     // Mod-Shift-/, which is usually the same as Mod-?,
     // shows a list of important hotkeys.
     Mod+Shift+Slash { show-hotkey-overlay; }

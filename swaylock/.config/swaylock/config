@@ -1,51 +1,56 @@
-# 背景设置
-color=000000
+# Background
+color=0c121e
 image=~/Pictures/wallpaper.png
 scaling=fill
 
-# 或者使用纯色背景
-# color=1e1e2e
-
-# 指示器设置
-indicator-radius=100
-indicator-thickness=7
+# Indicator
+indicator-radius=78
+indicator-thickness=5
 indicator-caps-lock
 
-# 环形指示器颜色
-ring-color=313244
-ring-clear-color=f5e0dc
-ring-caps-lock-color=fab387
-ring-ver-color=89b4fa
-ring-wrong-color=f38ba8
+# Ring
+ring-color=3f4f68
+ring-clear-color=72d6d3
+ring-caps-lock-color=e5c07b
+ring-ver-color=61afef
+ring-wrong-color=e06c75
 
-# 内部圆圈颜色
-inside-color=1e1e2e
-inside-clear-color=1e1e2e
-inside-caps-lock-color=1e1e2e
-inside-ver-color=1e1e2e
-inside-wrong-color=1e1e2e
+# Center
+inside-color=0c121ecc
+inside-clear-color=0c121ecc
+inside-caps-lock-color=0c121ecc
+inside-ver-color=0c121ecc
+inside-wrong-color=201217e6
 
-# 分隔线颜色
+# Line and separators
+line-color=00000000
+line-clear-color=00000000
+line-caps-lock-color=00000000
+line-ver-color=00000000
+line-wrong-color=00000000
 separator-color=00000000
 
-# 文本颜色
-text-color=cdd6f4
-text-clear-color=f5e0dc
-text-caps-lock-color=fab387
-text-ver-color=89b4fa
-text-wrong-color=f38ba8
+# Text
+text-color=dce3ee
+text-clear-color=72d6d3
+text-caps-lock-color=e5c07b
+text-ver-color=61afef
+text-wrong-color=e06c75
 
-# 按键反馈
-bs-hl-color=f38ba8
-key-hl-color=a6e3a1
+# Key feedback
+bs-hl-color=e06c75
+key-hl-color=98c379
+caps-lock-bs-hl-color=e06c75
+caps-lock-key-hl-color=e5c07b
 
-# 布局
-layout-text-color=cdd6f4
+# Layout
+layout-text-color=93a4b8
 layout-bg-color=00000000
+layout-border-color=00000000
 
-# 其他设置
-font=CaskaydiaCove Nerd Font
-font-size=24
+# Typography and behavior
+font=FiraCode Nerd Font
+font-size=20
 line-uses-ring
 disable-caps-lock-text
 show-failed-attempts

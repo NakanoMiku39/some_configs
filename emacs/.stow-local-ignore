@@ -1,0 +1,38 @@
+# Keep GNU Stow's default ignore rules because this package-local file
+# replaces the built-in list.
+RCS
+.+,v
+
+CVS
+\.\#.+
+\.cvsignore
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+\.gitmodules
+
+.+~
+\#.*\#
+
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# This package should link the regular Emacs config only.  Spacemacs uses
+# ~/.spacemacs as an alternative to ~/.emacs.d, so do not stow both.
+\.spacemacs
+
+# Local Emacs runtime state and package caches.
+^/\.emacs\.d/auto-save-list
+^/\.emacs\.d/eln-cache
+^/\.emacs\.d/straight
+^/\.emacs\.d/history
+^/\.emacs\.d/amx-items
+^/\.emacs\.d/recentf
+^/\.emacs\.d/bookmarks
+^/\.emacs\.d/tramp
+^/\.emacs\.d/banners

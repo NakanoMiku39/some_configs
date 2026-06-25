@@ -2,3 +2,14 @@
 .vscode/
 # tmux plugins (cloned via tpm)
 tmux/.config/tmux/plugins/
+
+# Emacs runtime state and package caches
+emacs/.emacs.d/auto-save-list/
+emacs/.emacs.d/eln-cache/
+emacs/.emacs.d/straight/
+emacs/.emacs.d/history
+emacs/.emacs.d/amx-items
+emacs/.emacs.d/recentf
+emacs/.emacs.d/bookmarks
+emacs/.emacs.d/tramp
+emacs/.emacs.d/banners/

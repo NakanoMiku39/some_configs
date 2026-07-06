@@ -1,28 +1,24 @@
-# [font]
-# size = 12.0
+[env]
+TERM = "xterm-256color"
 
-# [font.normal]
-# family = "JetBrainsMono"
-# style = "Medium"
+[window]
+opacity = 0.92
+dynamic_padding = false
+decorations = "Full"
 
-# [font.bold]
-# family = "JetBrainsMono"
-# style = "Heavy"
-
-# [font.italic]
-# family = "JetBrainsMono"
-# style = "Italic"
-
-# [font.bold_italic]
-# family = "JetBrainsMono"
-# style = "Heavy Italic"
-
-# [window.padding]
-# x = 15
-# y = 15
+[window.padding]
+x = 14
+y = 14
 
 [selection]
 save_to_clipboard = true
+
+[cursor]
+blink_interval = 500
+
+[cursor.style]
+shape = "Block"
+blinking = "On"
 
 [font]
 size = 12.0
@@ -37,13 +33,52 @@ style = "Bold"
 
 [font.italic]
 family = "FiraCode Nerd Font"
-style = "Medium"  # FiraCode 没有斜体
+style = "Medium"
 
 [font.bold_italic]
 family = "FiraCode Nerd Font"
-style = "Bold"  # FiraCode 没有粗斜体
+style = "Bold"
 
-[window.padding]
-x = 15
-y = 15
+[colors.primary]
+background = "#0c121e"
+foreground = "#dce3ee"
 
+[colors.cursor]
+text = "#0c121e"
+cursor = "#61afef"
+
+[colors.vi_mode_cursor]
+text = "#0c121e"
+cursor = "#e5c07b"
+
+[colors.selection]
+text = "#0c121e"
+background = "#61afef"
+
+[colors.search.matches]
+foreground = "#0c121e"
+background = "#e5c07b"
+
+[colors.search.focused_match]
+foreground = "#0c121e"
+background = "#98c379"
+
+[colors.normal]
+black = "#0c121e"
+red = "#e06c75"
+green = "#98c379"
+yellow = "#e5c07b"
+blue = "#61afef"
+magenta = "#c678dd"
+cyan = "#72d6d3"
+white = "#dce3ee"
+
+[colors.bright]
+black = "#3f4f68"
+red = "#ff7b86"
+green = "#a9d68c"
+yellow = "#f0d190"
+blue = "#7bc2ff"
+magenta = "#d997ef"
+cyan = "#8ae4e0"
+white = "#ffffff"

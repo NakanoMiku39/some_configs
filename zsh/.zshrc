@@ -121,10 +121,14 @@ export PATH="/home/nakanomiku/.local/bin:$PATH"
 eval "$(zoxide init zsh)"
 
 # ===== eza (better ls) =====
-alias ls="eza --icons --git"
-alias ll="eza -lh --icons --git"
-alias la="eza -lha --icons --git"
-alias lt="eza --tree --icons"
-
+if command -v eza >/dev/null 2>&1; then
+    alias ls='eza'
+    alias ll='eza -lah'
+    alias la="eza -lha --icons --git"
+    alias lt="eza --tree --icons"
+else
+    unalias ls 2>/dev/null
+    alias ll='ls -lah'
+fi
 # ===== cargo =====
 export PATH="$HOME/.cargo/bin:$PATH"

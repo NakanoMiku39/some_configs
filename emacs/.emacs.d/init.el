@@ -265,7 +265,16 @@
   :init (sml/setup))
 
 (use-package which-key
-  :init (which-key-mode))
+  :init
+  (setq which-key-idle-delay 0.45
+        which-key-idle-secondary-delay 0.05
+        which-key-side-window-max-height 0.35
+        which-key-max-description-length 32
+        which-key-show-remaining-keys t)
+  (which-key-mode)
+  :config
+  ;; 先显示当前 major/minor mode 的快捷键，全局通用命令放在后面。
+  (setq which-key-sort-order #'which-key-local-then-key-order))
 ;; (load-theme 'dracula t)
 
 (use-package flycheck

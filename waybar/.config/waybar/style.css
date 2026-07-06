@@ -26,7 +26,6 @@
 }
 
 #custom-logout,
-#custom-lock,
 #tray,
 #network,
 #bluetooth,
@@ -49,10 +48,6 @@
   margin-left: 6px;
   padding: 4px 9px;
   color: @red;
-}
-
-#custom-lock {
-  color: @aqua;
 }
 
 #tray {
@@ -89,7 +84,6 @@
 }
 
 #custom-logout:hover,
-#custom-lock:hover,
 #tray:hover,
 #network:hover,
 #bluetooth:hover,
@@ -151,4 +145,20 @@
   color: @muted;
   font-weight: 500;
   font-style: italic;
+}
+
+menu {
+  background: @bg;
+  border: 1px solid @border;
+  border-radius: 10px;
+  padding: 6px;
+}
+
+menuitem {
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+menuitem:hover {
+  background: @bg-hover;
 }

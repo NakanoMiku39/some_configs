@@ -5,7 +5,6 @@
   "spacing": 4,
   "modules-left": [
     "custom/logout",
-    "custom/lock",
     "tray"
   ],
   "modules-center": [
@@ -43,16 +42,18 @@
     }
   },
   "custom/logout": {
-    "format": "󰍃",
-    "on-click": "niri msg action quit",
+    "format": "",
     "tooltip": true,
-    "tooltip-format": "注销"
-  },
-  "custom/lock": {
-    "format": "",
-    "on-click": "swaylock",
-    "tooltip": true,
-    "tooltip-format": "锁屏"
+    "tooltip-format": "电源菜单",
+    "menu": "on-click",
+    "menu-file": "/home/nakanomiku/.config/waybar/power-menu.xml",
+    "menu-actions": {
+      "lock": "swaylock",
+      "logout": "niri msg action quit",
+      "suspend": "systemctl suspend",
+      "reboot": "systemctl reboot",
+      "poweroff": "systemctl poweroff"
+    }
   },
   "custom/reboot": {
     "format": "<span color='#FFD700'>  </span>",
@@ -127,8 +128,26 @@
     "interval": 1,
     "timezone": "Asia/Shanghai",
     "format": "  {:L%m 月 %d 日  %A  %H:%M}",
-    "tooltip": false,
-    "tooltip-format": "{:L%Y 年 %m 月 %d 日, %A}"
+    "tooltip": true,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#61afef'><b>{}</b></span>",
+        "days": "<span color='#dce3ee'><b>{}</b></span>",
+        "weeks": "<span color='#93a4b8'>W{}</span>",
+        "weekdays": "<span color='#e5c07b'><b>{}</b></span>",
+        "today": "<span color='#98c379'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
   },
   "tray": {
     "icon-size": 16,

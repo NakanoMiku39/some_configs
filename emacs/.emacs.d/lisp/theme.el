@@ -2,7 +2,7 @@
   :ensure t
   :config
   ;; Global settings (defaults)
-  (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
+  (setq doom-themes-enable-bold t      ; 启用真正的粗体字重
 	doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-dracula t)
   (doom-themes-treemacs-config)

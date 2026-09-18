@@ -1,5 +1,5 @@
 # Background
-color=0c121e
+color=282828
 image=~/Pictures/wallpaper.png
 scaling=fill
 
@@ -9,18 +9,18 @@ indicator-thickness=5
 indicator-caps-lock
 
 # Ring
-ring-color=3f4f68
-ring-clear-color=72d6d3
-ring-caps-lock-color=e5c07b
-ring-ver-color=61afef
-ring-wrong-color=e06c75
+ring-color=504945
+ring-clear-color=8ec07c
+ring-caps-lock-color=fabd2f
+ring-ver-color=83a598
+ring-wrong-color=fb4934
 
 # Center
-inside-color=0c121ecc
-inside-clear-color=0c121ecc
-inside-caps-lock-color=0c121ecc
-inside-ver-color=0c121ecc
-inside-wrong-color=201217e6
+inside-color=282828cc
+inside-clear-color=282828cc
+inside-caps-lock-color=282828cc
+inside-ver-color=282828cc
+inside-wrong-color=3c3836e6
 
 # Line and separators
 line-color=00000000
@@ -31,20 +31,20 @@ line-wrong-color=00000000
 separator-color=00000000
 
 # Text
-text-color=dce3ee
-text-clear-color=72d6d3
-text-caps-lock-color=e5c07b
-text-ver-color=61afef
-text-wrong-color=e06c75
+text-color=ebdbb2
+text-clear-color=8ec07c
+text-caps-lock-color=fabd2f
+text-ver-color=83a598
+text-wrong-color=fb4934
 
 # Key feedback
-bs-hl-color=e06c75
-key-hl-color=98c379
-caps-lock-bs-hl-color=e06c75
-caps-lock-key-hl-color=e5c07b
+bs-hl-color=fb4934
+key-hl-color=b8bb26
+caps-lock-bs-hl-color=fb4934
+caps-lock-key-hl-color=fabd2f
 
 # Layout
-layout-text-color=93a4b8
+layout-text-color=928374
 layout-bg-color=00000000
 layout-border-color=00000000
 

@@ -1,10 +1,10 @@
 font=FiraCode Nerd Font 11
-background-color=#0c121ee6
-text-color=#dce3eeff
-border-color=#61afefff
+background-color=#282828e6
+text-color=#ebdbb2ff
+border-color=#83a598ff
 border-size=2
 border-radius=12
-progress-color=over #61afefff
+progress-color=over #83a598ff
 
 width=380
 height=140
@@ -32,25 +32,25 @@ on-button-middle=dismiss-all
 on-button-right=dismiss
 
 [urgency=low]
-border-color=#3f4f68ff
+border-color=#504945ff
 default-timeout=3000
 
 [category=device]
-border-color=#72d6d3ff
+border-color=#8ec07cff
 default-timeout=1800
 
 [category=system]
-border-color=#61afefff
+border-color=#83a598ff
 default-timeout=5000
 
 [category=system.battery]
-border-color=#e5c07bff
+border-color=#fabd2fff
 default-timeout=8000
 
 [urgency=critical]
-background-color=#201217f2
-border-color=#e06c75ff
-text-color=#ffffffff
+background-color=#3c3836f2
+border-color=#fb4934ff
+text-color=#fbf1c7ff
 default-timeout=0
 
 [grouped]

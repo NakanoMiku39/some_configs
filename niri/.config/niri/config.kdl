@@ -271,9 +271,10 @@ layout {
 spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-at-startup "/usr/bin/fcitx5"
+spawn-at-startup "/home/nakanomiku/.config/scripts/battery-watch"
 spawn-at-startup "swayidle" "-w" \
-    "timeout" "300" "swaylock -f" \
-    "timeout" "600" "niri msg action power-off-monitors" \
+    "timeout" "600" "swaylock -f" \
+    "timeout" "1200" "niri msg action power-off-monitors" \
     "resume" "niri msg action power-on-monitors"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
@@ -421,6 +422,8 @@ binds {
     Mod+T hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Mod+N hotkey-overlay-title="Restore Notification" { spawn "makoctl" "restore"; }
+    Mod+Shift+N hotkey-overlay-title="Do Not Disturb" { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -430,16 +433,16 @@ binds {
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
     // Using spawn-sh allows to pass multiple arguments together with the command.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "down"; }
+    XF86AudioMute        allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "mute"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "mic-mute"; }
 
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-brightness" "up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-brightness" "down"; }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,

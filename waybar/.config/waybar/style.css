@@ -1,15 +1,15 @@
-@define-color bg rgba(12, 18, 30, 0.76);
-@define-color bg-hover rgba(31, 45, 70, 0.9);
-@define-color border rgba(120, 160, 210, 0.26);
-@define-color text #dce3ee;
-@define-color muted #93a4b8;
-@define-color blue #61afef;
-@define-color aqua #72d6d3;
-@define-color green #98c379;
-@define-color yellow #e5c07b;
-@define-color orange #d19a66;
-@define-color purple #c678dd;
-@define-color red #e06c75;
+@define-color bg rgba(40, 40, 40, 0.82);
+@define-color bg-hover rgba(80, 73, 69, 0.92);
+@define-color border rgba(168, 153, 132, 0.3);
+@define-color text #ebdbb2;
+@define-color muted #928374;
+@define-color blue #83a598;
+@define-color aqua #8ec07c;
+@define-color green #b8bb26;
+@define-color yellow #fabd2f;
+@define-color orange #fe8019;
+@define-color purple #d3869b;
+@define-color red #fb4934;
 
 * {
   font-family: "FiraCode Nerd Font";
@@ -104,13 +104,13 @@
 #memory:hover,
 #cpu:hover {
   background: @bg-hover;
-  border-color: rgba(140, 190, 245, 0.42);
+  border-color: rgba(213, 196, 161, 0.42);
 }
 
 #custom-logout:hover {
-  background: rgba(120, 48, 58, 0.9);
-  border-color: rgba(224, 108, 117, 0.55);
-  color: #ffffff;
+  background: rgba(204, 36, 29, 0.42);
+  border-color: rgba(251, 73, 52, 0.65);
+  color: #fbf1c7;
 }
 
 #battery.warning {
@@ -142,13 +142,13 @@
 }
 
 #workspaces button:hover {
-  background: rgba(97, 175, 239, 0.18);
+  background: rgba(131, 165, 152, 0.22);
   color: @text;
 }
 
 #workspaces button.active {
   background: @blue;
-  color: #08111f;
+  color: #282828;
 }
 
 #window {

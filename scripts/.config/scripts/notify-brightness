@@ -1,0 +1,20 @@
+#!/bin/sh
+
+id_file="${XDG_RUNTIME_DIR:-/tmp}/notify-brightness.id"
+
+case "$1" in
+    up)
+        brightnessctl --class=backlight set +10%
+        ;;
+    down)
+        brightnessctl --class=backlight set 10%-
+        ;;
+    *)
+        exit 2
+        ;;
+esac
+
+percent="$(brightnessctl --class=backlight --percentage get | tr -d '%')"
+old_id="$(cat "$id_file" 2>/dev/null || true)"
+
+notify-send -a system -c device -u low -r "${old_id:-0}" -p -h "int:value:${percent:-0}" "Brightness" "${percent:-0}%" > "$id_file"

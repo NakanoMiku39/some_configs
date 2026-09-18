@@ -1,0 +1,42 @@
+#!/bin/sh
+
+id_file="${XDG_RUNTIME_DIR:-/tmp}/notify-volume.id"
+mic_id_file="${XDG_RUNTIME_DIR:-/tmp}/notify-microphone.id"
+
+case "$1" in
+    up)
+        wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 0.05+
+        ;;
+    down)
+        wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-
+        ;;
+    mute)
+        wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+        ;;
+    mic-mute)
+        wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+        muted="$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -qi muted && echo muted || echo active)"
+        old_id="$(cat "$mic_id_file" 2>/dev/null || true)"
+        notify-send -a system -c device -u low -r "${old_id:-0}" -p "Microphone" "$muted" > "$mic_id_file"
+        exit 0
+        ;;
+    *)
+        exit 2
+        ;;
+esac
+
+volume_line="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+volume="$(printf '%s\n' "$volume_line" | awk '{printf "%d", $2 * 100}')"
+
+if printf '%s\n' "$volume_line" | grep -qi muted; then
+    summary="Volume muted"
+    body="0%"
+    value=0
+else
+    summary="Volume"
+    body="${volume}%"
+    value="${volume:-0}"
+fi
+
+old_id="$(cat "$id_file" 2>/dev/null || true)"
+notify-send -a system -c device -u low -r "${old_id:-0}" -p -h "int:value:${value}" "$summary" "$body" > "$id_file"

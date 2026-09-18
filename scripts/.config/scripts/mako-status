@@ -1,0 +1,12 @@
+#!/bin/sh
+
+modes="$(makoctl mode 2>/dev/null)" || {
+    printf '󰂛 off\n'
+    exit 0
+}
+
+if printf '%s\n' "$modes" | grep -qx 'do-not-disturb'; then
+    printf '󰂛 dnd\n'
+else
+    printf '󰂚\n'
+fi

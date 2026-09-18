@@ -1,0 +1,36 @@
+#!/bin/sh
+
+state_file="${XDG_RUNTIME_DIR:-/tmp}/battery-watch.state"
+
+while :; do
+    battery=""
+    for candidate in /sys/class/power_supply/BAT*; do
+        [ -d "$candidate" ] || continue
+        battery="$candidate"
+        break
+    done
+
+    [ -n "$battery" ] || exit 0
+
+    capacity="$(cat "$battery/capacity" 2>/dev/null || echo 100)"
+    status="$(cat "$battery/status" 2>/dev/null || echo Unknown)"
+    previous="$(cat "$state_file" 2>/dev/null || true)"
+    next="ok"
+
+    if [ "$status" = "Discharging" ]; then
+        if [ "$capacity" -le 10 ]; then
+            next="critical"
+            if [ "$previous" != "$next" ]; then
+                notify-send -a system -c system.battery -u critical "Battery critical" "${capacity}% remaining. Plug in power."
+            fi
+        elif [ "$capacity" -le 20 ]; then
+            next="low"
+            if [ "$previous" != "$next" ]; then
+                notify-send -a system -c system.battery -u normal "Battery low" "${capacity}% remaining."
+            fi
+        fi
+    fi
+
+    printf '%s\n' "$next" > "$state_file"
+    sleep 60
+done

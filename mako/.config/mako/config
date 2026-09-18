@@ -20,7 +20,7 @@ icon-border-radius=8
 markup=1
 actions=1
 history=1
-max-history=10
+max-history=20
 max-visible=4
 sort=-time
 default-timeout=5000
@@ -35,6 +35,18 @@ on-button-right=dismiss
 border-color=#3f4f68ff
 default-timeout=3000
 
+[category=device]
+border-color=#72d6d3ff
+default-timeout=1800
+
+[category=system]
+border-color=#61afefff
+default-timeout=5000
+
+[category=system.battery]
+border-color=#e5c07bff
+default-timeout=8000
+
 [urgency=critical]
 background-color=#201217f2
 border-color=#e06c75ff
@@ -46,3 +58,6 @@ format=(%g) <b>%s</b>\n%b
 
 [mode=do-not-disturb]
 invisible=1
+
+[mode=do-not-disturb urgency=critical]
+invisible=0

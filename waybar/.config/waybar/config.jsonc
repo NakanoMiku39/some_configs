@@ -11,6 +11,7 @@
     "clock"
   ],
   "modules-right": [
+    "custom/notifications",
     "network",
     "bluetooth",
     "pulseaudio",
@@ -55,6 +56,16 @@
       "poweroff": "systemctl poweroff"
     }
   },
+  "custom/notifications": {
+    "exec": "/home/nakanomiku/.config/scripts/mako-status",
+    "interval": 2,
+    "format": "{}",
+    "on-click": "makoctl restore",
+    "on-click-middle": "makoctl dismiss --all",
+    "on-click-right": "makoctl mode -t do-not-disturb",
+    "tooltip": true,
+    "tooltip-format": "mako 通知\n左键恢复上一条，右键勿扰，中键清空"
+  },
   "custom/reboot": {
     "format": "<span color='#FFD700'>  </span>",
     "on-click": "systemctl reboot",
@@ -70,10 +81,15 @@
   "network": {
     "format-wifi": "󰤨 {essid}",
     "format-ethernet": "󰈀 Wired",
-    "tooltip-format": "上传 {bandwidthUpBytes}  下载 {bandwidthDownBytes}",
+    "tooltip-format": "上传 {bandwidthUpBytes}  下载 {bandwidthDownBytes}\n左键网络设置，右键新增 Wi-Fi",
+    "tooltip-format-wifi": "{essid}  {signalStrength}%\n上传 {bandwidthUpBytes}  下载 {bandwidthDownBytes}\n左键网络设置，右键新增 Wi-Fi",
+    "tooltip-format-ethernet": "{ifname} wired\n上传 {bandwidthUpBytes}  下载 {bandwidthDownBytes}\n左键网络设置",
+    "tooltip-format-disconnected": "网络未连接\n左键网络设置，右键新增 Wi-Fi",
     "format-linked": "󱘖 {ifname} no IP",
     "format-disconnected": "󰤭 Offline",
     "format-alt": "󰤨 {signalStrength}%",
+    "on-click": "nm-connection-editor",
+    "on-click-right": "nm-connection-editor --type=802-11-wireless --create",
     "interval": 1
   },
   "battery": {
@@ -128,8 +144,10 @@
     "interval": 1,
     "timezone": "Asia/Shanghai",
     "format": "  {:L%m 月 %d 日  %A  %H:%M}",
+    "format-alt": "  {:%Y-%m-%d  %H:%M:%S}",
+    "on-click": "gnome-clocks",
     "tooltip": true,
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>\n左键时钟，右键切换日历模式，滚轮切换月份",
     "calendar": {
       "mode": "month",
       "mode-mon-col": 3,
@@ -144,7 +162,7 @@
       }
     },
     "actions": {
-      "on-click": "mode",
+      "on-click-right": "mode",
       "on-scroll-up": "shift_up",
       "on-scroll-down": "shift_down"
     }
@@ -169,8 +187,10 @@
     "format": " {status}",
     "format-connected": " {device_alias}",
     "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "on-click": "blueman-manager",
+    "on-click-right": "blueman-adapters",
+    "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n左键设备管理，右键适配器设置",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}\n左键设备管理，右键适配器设置",
     "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
     "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
   }

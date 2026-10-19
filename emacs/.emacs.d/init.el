@@ -49,8 +49,30 @@
 ;; (add-to-list 'default-frame-alist '(width . 120))  ; （可选）设定启动图形界面时的初始 Frame 宽度（字符数）
 ;; (add-to-list 'default-frame-alist '(height . 80)) ; （可选）设定启动图形界面时的初始 Frame 高度（字符数）
 ;; (set-frame-size (selected-frame) 120 80)
-;; ;; 更改显示字体大小 16pt
-(set-face-attribute 'default nil :height 160)
+;; 使用 Fira Code 作为默认字体，保持 16pt 字号
+(set-face-attribute 'default nil :family "Fira Code" :height 160)
+(dolist (script '(han kana cjk-misc bopomofo hangul))
+  (set-fontset-font t script "Noto Sans Mono CJK SC" nil 'prepend))
+(set-fontset-font t 'emoji "Noto Color Emoji" nil 'prepend)
+
+(use-package ligature
+  :config
+  ;; 在所有 major mode 中启用 www 连字
+  (ligature-set-ligatures 't '("www"))
+  ;; 在编程模式中启用 Fira Code 连字
+  (ligature-set-ligatures
+   'prog-mode
+   '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+     ":::" ":=" "!!" "!=" "!==" "-}" "----" "-->" "->" "->>"
+     "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+     "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+     "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+     "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+     "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+     "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+     "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+     "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+  (global-ligature-mode 't))
 ;; 限制 undo 记录的内存大小
 (setq undo-limit (* 20 1024 1024))        ; 20MB (默认是 160kb，太小了；但也别设太大)
 (setq undo-strong-limit (* 30 1024 1024)) ; 30MB

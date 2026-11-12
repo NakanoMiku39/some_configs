@@ -1,3 +1,5 @@
+;;; org-mode.el -*- lexical-binding: t; -*-
+
 (defface my/org-bold
   '((t (:foreground "#ff6c6b" :weight bold)))
   "Face used for bold text in Org buffers."

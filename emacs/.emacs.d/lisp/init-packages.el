@@ -1,3 +1,4 @@
+;;; init-packages.el  -*- lexical-binding: t; -*-
 (require 'package)
 (setq package-archives '(("gnu"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
 

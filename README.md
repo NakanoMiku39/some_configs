@@ -9,14 +9,13 @@ paths inside a package are relative to `$HOME`.
 - `alacritty`
 - `emacs`
 - `foot`
-- `fuzzel`
 - `git`
 - `gtk`
 - `i3blocks`
 - `i3status`
 - `i3wm`
-- `mako`
 - `niri`
+- `noctalia`
 - `picom`
 - `scripts`
 - `starship`
@@ -24,31 +23,52 @@ paths inside a package are relative to `$HOME`.
 - `systemd`
 - `tmux`
 - `vim`
-- `waybar`
 - `zsh`
 
 The `emacs` package links the regular `~/.emacs.d` setup.  The legacy
 Spacemacs-style `~/.spacemacs` file is kept out of Stow so the two mutually
 exclusive Emacs configurations are not linked at the same time.
+It uses Fira Code with programming ligatures, Noto Sans Mono CJK SC for CJK
+text, and Noto Color Emoji for emoji.
 
 The `zsh` package links `~/.zshrc` and `~/.p10k.zsh`. Third-party Oh My Zsh
 plugins and themes are installed separately under `~/.oh-my-zsh/custom`.
 
-The `fuzzel` package links `~/.config/fuzzel/fuzzel.ini`. The niri config uses
-`Mod+D` to launch fuzzel.
+The `niri` config starts Noctalia and delegates the launcher, notifications,
+lock screen, wallpaper, volume, brightness, and media controls to it. Noctalia
+must be installed separately. Its package enables the built-in Polkit agent.
+
+In a normal niri desktop session, `Mod` is Super. Application shortcuts include:
+
+- `Mod+D` or `Alt+Space`: Noctalia launcher
+- `Mod+T`: Foot
+- `Mod+B`: Brave
+- `Mod+E`: Neomacs
+- `Mod+N`: Noctalia notification center
+- `Super+Alt+L`: Noctalia lock screen
 
 The `foot` package links `~/.config/foot/foot.ini`. The niri config uses
 `Mod+T` to launch foot. Alacritty remains available as an alternative terminal.
+Foot uses Fira Code, Noto Sans Mono CJK SC, and Noto Color Emoji.
 
-The `mako` package links `~/.config/mako/config`. The niri config starts mako
-at session startup.
+The `tmux` package uses Gruvbox colors for its status bar, pane borders, and
+messages.
+
+OneDriver, OpenClaw, and Hermes Gateway user services and their enablement
+links are local-only and excluded from version control.
 
 The `gtk` package links `~/.config/gtk-3.0/settings.ini` to remove GTK tooltip
-delay for Waybar and other GTK3 surfaces.
+delay.
+
+Legacy desktop stacks are maintained on dedicated branches:
+
+- `waybar-mako-fuzzel`
+- `waybar-swaync-walker`
 
 ## RUN THIS
 ```sh
-stow -v -t "$HOME" alacritty emacs foot fuzzel git gtk mako niri picom scripts swaylock systemd tmux waybar zsh
+stow -v -t "$HOME" alacritty emacs foot git gtk niri noctalia picom \
+  scripts swaylock systemd tmux zsh
 ```
 
 ## Usage
@@ -56,19 +76,25 @@ stow -v -t "$HOME" alacritty emacs foot fuzzel git gtk mako niri picom scripts s
 Preview links before changing `$HOME`:
 
 ```sh
-stow -nv -t "$HOME" aerospace alacritty emacs foot fuzzel git gtk i3blocks i3status i3wm mako niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -nv -t "$HOME" aerospace alacritty emacs foot git gtk i3blocks \
+  i3status i3wm niri noctalia picom scripts starship swaylock systemd \
+  tmux vim zsh
 ```
 
 Apply the links:
 
 ```sh
-stow -v -t "$HOME" aerospace alacritty emacs foot fuzzel git gtk i3blocks i3status i3wm mako niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -v -t "$HOME" aerospace alacritty emacs foot git gtk i3blocks \
+  i3status i3wm niri noctalia picom scripts starship swaylock systemd \
+  tmux vim zsh
 ```
 
 Remove links managed by stow:
 
 ```sh
-stow -Dv -t "$HOME" aerospace alacritty emacs foot fuzzel git gtk i3blocks i3status i3wm mako niri picom scripts starship swaylock systemd tmux vim waybar zsh
+stow -Dv -t "$HOME" aerospace alacritty emacs foot git gtk i3blocks \
+  i3status i3wm niri noctalia picom scripts starship swaylock systemd \
+  tmux vim zsh
 ```
 
 If existing files in `$HOME` conflict with stow, move or back them up first,

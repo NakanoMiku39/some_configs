@@ -111,7 +111,7 @@ input {
 // https://yalter.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 6
+    gaps 2
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -159,7 +159,7 @@ layout {
         // off
 
         // How many logical pixels the ring extends out from the windows.
-        width 2
+        width 1
 
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
@@ -267,20 +267,12 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 
-// This line starts waybar, a commonly used bar for Wayland compositors.
-spawn-at-startup "waybar"
-spawn-at-startup "mako"
+// Noctalia provides the shell and desktop services.
+spawn-at-startup "noctalia"
 spawn-at-startup "/usr/bin/fcitx5"
-spawn-at-startup "/usr/libexec/xfce-polkit"
-spawn-at-startup "/home/nakanomiku/.config/scripts/battery-watch"
-spawn-at-startup "swayidle" "-w" \
-    "timeout" "600" "swaylock -f" \
-    "timeout" "1200" "niri msg action power-off-monitors" \
-    "resume" "niri msg action power-on-monitors"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
-spawn-sh-at-startup "swaybg -i ~/Pictures/wallpaper.png -m fill"
 
 hotkey-overlay {
     // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
@@ -398,11 +390,23 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
+// Show Noctalia's blurred wallpaper in Niri's overview backdrop.
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}
+
+// Open Noctalia settings as a floating window.
 window-rule {
-    geometry-corner-radius 8
-    clip-to-geometry true
+    match app-id="dev.noctalia.Noctalia"
+    open-floating true
+    default-column-width { fixed 1080; }
+    default-window-height { fixed 920; }
+}
+
+// Allow notification actions and window activation from Noctalia.
+debug {
+    honor-xdg-activation-with-invalid-serial
 }
 
 binds {
@@ -426,10 +430,41 @@ binds {
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+T hotkey-overlay-title="Open a Terminal: foot" { spawn "foot"; }
-    Mod+D hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-    Mod+N hotkey-overlay-title="Restore Notification" { spawn "makoctl" "restore"; }
-    Mod+Shift+N hotkey-overlay-title="Do Not Disturb" { spawn "makoctl" "mode" "-t" "do-not-disturb"; }
+    Mod+B hotkey-overlay-title="Open a Browser: Brave" {
+        spawn "brave-browser";
+    }
+    Mod+E hotkey-overlay-title="Open Neomacs" { spawn "neomacs"; }
+    Mod+D hotkey-overlay-title="Application Launcher" {
+        spawn "noctalia" "msg" "panel-toggle" "launcher";
+    }
+    Alt+Space hotkey-overlay-title="Application Launcher" {
+        spawn "noctalia" "msg" "panel-toggle" "launcher";
+    }
+    Mod+Shift+C hotkey-overlay-title="Clipboard Manager" {
+        spawn "noctalia" "msg" "panel-toggle" "clipboard";
+    }
+    Mod+M hotkey-overlay-title="System Monitor" {
+        spawn "noctalia" "msg" "panel-toggle" "control-center" "system";
+    }
+    Mod+X hotkey-overlay-title="Session Menu" {
+        spawn "noctalia" "msg" "panel-toggle" "session";
+    }
+    Mod+Shift+Comma hotkey-overlay-title="Noctalia Settings" {
+        spawn "noctalia" "msg" "settings-toggle";
+    }
+    Mod+Y hotkey-overlay-title="Browse Wallpapers" {
+        spawn "noctalia" "msg" "panel-toggle" "wallpaper";
+    }
+    Mod+N hotkey-overlay-title="Notification Center" {
+        spawn "noctalia" "msg" "panel-toggle" "control-center" \
+            "notifications";
+    }
+    Mod+Alt+N hotkey-overlay-title="Night Light" {
+        spawn "noctalia" "msg" "night-light-toggle";
+    }
+    Super+Alt+L hotkey-overlay-title="Lock Screen" {
+        spawn "noctalia" "msg" "session" "lock";
+    }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
@@ -439,16 +474,40 @@ binds {
     // Example volume keys mappings for PipeWire & WirePlumber.
     // The allow-when-locked=true property makes them work even when the session is locked.
     // Using spawn-sh allows to pass multiple arguments together with the command.
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "up"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "down"; }
-    XF86AudioMute        allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "mute"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-volume" "mic-mute"; }
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-up" "3";
+    }
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-down" "3";
+    }
+    XF86AudioMute allow-when-locked=true {
+        spawn "noctalia" "msg" "volume-mute";
+    }
+    XF86AudioMicMute allow-when-locked=true {
+        spawn "noctalia" "msg" "mic-mute";
+    }
+    XF86AudioPlay allow-when-locked=true {
+        spawn "noctalia" "msg" "media" "toggle";
+    }
+    XF86AudioPause allow-when-locked=true {
+        spawn "noctalia" "msg" "media" "toggle";
+    }
+    XF86AudioPrev allow-when-locked=true {
+        spawn "noctalia" "msg" "media" "previous";
+    }
+    XF86AudioNext allow-when-locked=true {
+        spawn "noctalia" "msg" "media" "next";
+    }
 
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
     // but you need to manually put each argument in separate "" quotes.
-    XF86MonBrightnessUp allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-brightness" "up"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "/home/nakanomiku/.config/scripts/notify-brightness" "down"; }
+    XF86MonBrightnessUp allow-when-locked=true {
+        spawn "noctalia" "msg" "brightness-up";
+    }
+    XF86MonBrightnessDown allow-when-locked=true {
+        spawn "noctalia" "msg" "brightness-down";
+    }
 
     // Open/close the Overview: a zoomed-out view of workspaces and windows.
     // You can also move the mouse into the top-left hot corner,
@@ -678,3 +737,4 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 }
+

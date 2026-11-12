@@ -4,6 +4,10 @@
 tmux/.config/tmux/plugins/
 
 # Emacs runtime state and package caches
+emacs/.emacs.d/.cache/
+emacs/.emacs.d/.mc-lists.el
+emacs/.emacs.d/elpa/
+emacs/.emacs.d/neomacs-debug.log
 emacs/.emacs.d/auto-save-list/
 emacs/.emacs.d/eln-cache/
 emacs/.emacs.d/straight/
@@ -13,3 +17,17 @@ emacs/.emacs.d/recentf
 emacs/.emacs.d/bookmarks
 emacs/.emacs.d/tramp
 emacs/.emacs.d/banners/
+
+# Generated DMS configuration and themes
+alacritty/.config/alacritty/dank-theme.toml
+emacs/.emacs.d/themes/dank-emacs-theme.el
+foot/.config/foot/dank-colors.ini
+niri/.config/niri/dms/
+
+# Local-only services outside this repository's managed configuration
+systemd/.config/systemd/user/onedriver@*.service.d/
+systemd/.config/systemd/user/graphical-session.target.wants/onedriver@*.service
+systemd/.config/systemd/user/openclaw-gateway.service
+systemd/.config/systemd/user/default.target.wants/openclaw-gateway.service
+systemd/.config/systemd/user/hermes-gateway.service
+systemd/.config/systemd/user/default.target.wants/hermes-gateway.service
